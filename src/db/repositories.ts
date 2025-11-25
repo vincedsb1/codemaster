@@ -2,7 +2,7 @@
  * Data Access Layer - Repository pattern for IndexedDB operations
  */
 
-import type { Question, QuizSession, Badge } from '@/types/models'
+import type { Question, QuizSession, Badge, Category } from '@/types/models'
 import { DB_CONFIG } from '@/types/constants'
 import { dbOp, dbPromise } from './config'
 
@@ -128,5 +128,71 @@ export const metaRepository = {
 
   async saveBadges(badges: Badge[]): Promise<void> {
     return this.save('badges', { list: badges })
+  },
+}
+
+/**
+ * CATEGORIES OPERATIONS
+ */
+export const categoryRepository = {
+  async getAll(): Promise<Category[]> {
+    return dbOp(DB_CONFIG.STORES.CATEGORIES, 'readonly', (store) => store.getAll())
+  },
+
+  async getById(id: string): Promise<Category | undefined> {
+    return dbOp(DB_CONFIG.STORES.CATEGORIES, 'readonly', (store) => store.get(id))
+  },
+
+  async getByLabel(label: string): Promise<Category | undefined> {
+    return dbOp(DB_CONFIG.STORES.CATEGORIES, 'readonly', (store) => {
+      return store.index('label').get(label)
+    })
+  },
+
+  async save(category: Category): Promise<void> {
+    return dbOp(DB_CONFIG.STORES.CATEGORIES, 'readwrite', (store) => {
+      store.put(category)
+      return { result: undefined } as any
+    })
+  },
+
+  async update(category: Category): Promise<void> {
+    return dbOp(DB_CONFIG.STORES.CATEGORIES, 'readwrite', (store) => {
+      store.put(category)
+      return { result: undefined } as any
+    })
+  },
+
+  async delete(id: string): Promise<void> {
+    return dbOp(DB_CONFIG.STORES.CATEGORIES, 'readwrite', (store) => {
+      store.delete(id)
+      return { result: undefined } as any
+    })
+  },
+
+  async deleteByLabel(label: string): Promise<void> {
+    const category = await this.getByLabel(label)
+    if (category) {
+      await this.delete(category.id)
+    }
+  },
+
+  async saveMany(categories: Category[]): Promise<void> {
+    const db = await dbPromise
+    const tx = db.transaction(DB_CONFIG.STORES.CATEGORIES, 'readwrite')
+    const store = tx.objectStore(DB_CONFIG.STORES.CATEGORIES)
+
+    return new Promise((resolve, reject) => {
+      categories.forEach((c) => store.put(c))
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  },
+
+  async clear(): Promise<void> {
+    return dbOp(DB_CONFIG.STORES.CATEGORIES, 'readwrite', (store) => {
+      store.clear()
+      return { result: undefined } as any
+    })
   },
 }

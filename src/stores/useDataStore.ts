@@ -1,17 +1,18 @@
 /**
- * Data Store - Manages static data (Questions, Badges)
+ * Data Store - Manages static data (Questions, Badges, Categories)
  */
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { Question, Badge } from '@/types/models'
-import { DEFAULT_QUESTIONS, DEFAULT_BADGES } from '@/types/constants'
-import { questionRepository, metaRepository } from '@/db/repositories'
+import { ref, computed } from 'vue'
+import type { Question, Badge, Category, Difficulty } from '@/types/models'
+import { DEFAULT_QUESTIONS, DEFAULT_BADGES, DEFAULT_CATEGORIES } from '@/types/constants'
+import { questionRepository, metaRepository, categoryRepository } from '@/db/repositories'
 
 export const useDataStore = defineStore('data', () => {
   // State
   const questions = ref<Question[]>([])
   const badges = ref<Badge[]>([])
+  const categories = ref<Category[]>([])
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
@@ -42,6 +43,17 @@ export const useDataStore = defineStore('data', () => {
       }
 
       badges.value = bdgs
+
+      // Load categories from DB
+      let cats = await categoryRepository.getAll()
+
+      if (cats.length === 0) {
+        // First time: load defaults
+        await categoryRepository.saveMany(DEFAULT_CATEGORIES)
+        cats = DEFAULT_CATEGORIES
+      }
+
+      categories.value = cats
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Erreur lors du chargement des données'
       console.error('Data init error:', err)
@@ -50,7 +62,7 @@ export const useDataStore = defineStore('data', () => {
     }
   }
 
-  async function importQuestions(json: any[]) {
+  async function importQuestions(json: Array<Record<string, unknown>>, targetCategory?: string) {
     error.value = null
 
     try {
@@ -63,29 +75,31 @@ export const useDataStore = defineStore('data', () => {
         throw new Error('Le fichier est vide')
       }
 
-      const firstQuestion = json[0]
+      const firstQuestion = json[0] as Record<string, unknown>
       if (
         !firstQuestion.intitule ||
         !firstQuestion.reponses ||
         firstQuestion.indexBonneReponse === undefined ||
-        !firstQuestion.categorie ||
         !firstQuestion.difficulte
       ) {
         throw new Error('Format invalide : propriétés requises manquantes')
       }
 
       // Normalize and save
-      const normalized = json.map((q, idx) => ({
-        id: q.id || `imported-${Date.now()}-${idx}`,
-        intitule: q.intitule,
-        reponses: q.reponses,
-        indexBonneReponse: q.indexBonneReponse,
-        explication: q.explication || '',
-        categorie: q.categorie,
-        difficulte: q.difficulte,
-        countApparition: 0,
-        countBonneReponse: 0,
-      }))
+      const normalized: Question[] = json.map((q, idx) => {
+        const question = q as Record<string, unknown>
+        return {
+          id: (question.id as string) || `imported-${Date.now()}-${idx}`,
+          intitule: question.intitule as string,
+          reponses: question.reponses as string[],
+          indexBonneReponse: question.indexBonneReponse as number,
+          explication: (question.explication as string) || '',
+          categorie: (targetCategory || (question.categorie as string) || 'Sans catégorie') as string,
+          difficulte: (question.difficulte as string) as Exclude<Difficulty, 'random'>,
+          countApparition: 0,
+          countBonneReponse: 0,
+        }
+      })
 
       // Clear and reload
       await questionRepository.clear()
@@ -124,17 +138,131 @@ export const useDataStore = defineStore('data', () => {
     }
   }
 
+  // Categories management actions
+  async function loadCategories() {
+    try {
+      const cats = await categoryRepository.getAll()
+      categories.value = cats
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Erreur lors du chargement des catégories'
+      throw error.value
+    }
+  }
+
+  async function addCategory(category: Category) {
+    try {
+      // Validate label is unique
+      const existing = categories.value.find((c) => c.label === category.label)
+      if (existing) {
+        throw new Error(`Une catégorie avec le label "${category.label}" existe déjà`)
+      }
+
+      // Save to DB
+      await categoryRepository.save(category)
+      categories.value.push(category)
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Erreur lors de l\'ajout de la catégorie'
+      throw error.value
+    }
+  }
+
+  async function updateCategory(category: Category) {
+    try {
+      // Validate label is unique (excluding current category)
+      const existing = categories.value.find((c) => c.label === category.label && c.id !== category.id)
+      if (existing) {
+        throw new Error(`Une catégorie avec le label "${category.label}" existe déjà`)
+      }
+
+      // Find old category to get old label
+      const oldCategory = categories.value.find((c) => c.id === category.id)
+      if (!oldCategory) {
+        throw new Error('Catégorie non trouvée')
+      }
+
+      // Update questions with new label if label changed
+      if (oldCategory.label !== category.label) {
+        questions.value = questions.value.map((q) =>
+          q.categorie === oldCategory.label ? { ...q, categorie: category.label } : q,
+        )
+        await questionRepository.saveMany(questions.value)
+      }
+
+      // Update category in DB
+      await categoryRepository.update(category)
+
+      // Update in state
+      const idx = categories.value.findIndex((c) => c.id === category.id)
+      if (idx !== -1) {
+        categories.value[idx] = category
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de la catégorie'
+      throw error.value
+    }
+  }
+
+  async function deleteCategory(categoryId: string) {
+    try {
+      const category = categories.value.find((c) => c.id === categoryId)
+      if (!category) {
+        throw new Error('Catégorie non trouvée')
+      }
+
+      // Delete questions in this category
+      questions.value = questions.value.filter((q) => q.categorie !== category.label)
+      await questionRepository.saveMany(questions.value)
+
+      // Delete category from DB
+      await categoryRepository.delete(categoryId)
+
+      // Remove from state
+      categories.value = categories.value.filter((c) => c.id !== categoryId)
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Erreur lors de la suppression de la catégorie'
+      throw error.value
+    }
+  }
+
+  function getCategoryByLabel(label: string): Category | undefined {
+    return categories.value.find((c) => c.label === label)
+  }
+
+  async function resetCategories() {
+    try {
+      await categoryRepository.clear()
+      await categoryRepository.saveMany(DEFAULT_CATEGORIES)
+      categories.value = DEFAULT_CATEGORIES
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Erreur lors de la réinitialisation des catégories'
+      throw error.value
+    }
+  }
+
+  // Getters
+  const allCategories = computed(() => categories.value)
+
   return {
     // State
     questions,
     badges,
+    categories,
     isLoading,
     error,
+
+    // Getters
+    allCategories,
 
     // Actions
     initData,
     importQuestions,
     resetBadges,
     updateBadges,
+    loadCategories,
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    getCategoryByLabel,
+    resetCategories,
   }
 })
