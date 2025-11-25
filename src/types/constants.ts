@@ -2,7 +2,7 @@
  * Constants, enums, and default data for Quiz Master
  */
 
-import type { Question, Badge } from './models'
+import type { Question, Badge, Category } from './models'
 
 export const DB_CONFIG = {
   NAME: 'quiz-master-db',
@@ -11,8 +11,108 @@ export const DB_CONFIG = {
     QUESTIONS: 'questions',
     SESSIONS: 'sessions',
     META: 'meta',
+    CATEGORIES: 'categories',
   },
 }
+
+export const DEFAULT_CATEGORIES: Category[] = [
+  {
+    id: 'cat_typescript',
+    label: 'TypeScript',
+    icon: 'Code',
+    color: 'blue',
+  },
+  {
+    id: 'cat_react',
+    label: 'React',
+    icon: 'React',
+    color: 'cyan',
+  },
+  {
+    id: 'cat_nextjs',
+    label: 'Next.js',
+    icon: 'Rocket',
+    color: 'slate',
+  },
+  {
+    id: 'cat_nodejs',
+    label: 'Node.js',
+    icon: 'Cpu',
+    color: 'green',
+  },
+  {
+    id: 'cat_css',
+    label: 'CSS',
+    icon: 'Palette',
+    color: 'purple',
+  },
+  {
+    id: 'cat_database',
+    label: 'Database',
+    icon: 'Database',
+    color: 'orange',
+  },
+  {
+    id: 'cat_entretien',
+    label: 'Entretien',
+    icon: 'Chat',
+    color: 'indigo',
+  },
+  {
+    id: 'cat_maths',
+    label: 'Maths',
+    icon: 'Calculator',
+    color: 'amber',
+  },
+  {
+    id: 'cat_science',
+    label: 'Science',
+    icon: 'Microscope',
+    color: 'emerald',
+  },
+  {
+    id: 'cat_geographie',
+    label: 'Géographie',
+    icon: 'Globe',
+    color: 'cyan',
+  },
+  {
+    id: 'cat_art',
+    label: 'Art',
+    icon: 'Palette',
+    color: 'pink',
+  },
+  {
+    id: 'cat_physique',
+    label: 'Physique',
+    icon: 'Lightning',
+    color: 'yellow',
+  },
+  {
+    id: 'cat_histoire',
+    label: 'Histoire',
+    icon: 'BookOpen',
+    color: 'red',
+  },
+  {
+    id: 'cat_astronomie',
+    label: 'Astronomie',
+    icon: 'MoonStars',
+    color: 'indigo',
+  },
+  {
+    id: 'cat_biologie',
+    label: 'Biologie',
+    icon: 'Bug',
+    color: 'green',
+  },
+  {
+    id: 'cat_culture',
+    label: 'Culture',
+    icon: 'Wine',
+    color: 'purple',
+  },
+]
 
 export const DEFAULT_QUESTIONS: Question[] = [
   {

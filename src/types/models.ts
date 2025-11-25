@@ -4,6 +4,14 @@
 
 export type Difficulty = 'facile' | 'moyen' | 'difficile' | 'random'
 export type BadgeStatus = 'verrouille' | 'debloque'
+export type TailwindColor = 'slate' | 'red' | 'orange' | 'amber' | 'yellow' | 'lime' | 'green' | 'emerald' | 'teal' | 'cyan' | 'blue' | 'indigo' | 'purple' | 'pink'
+
+export interface Category {
+  id: string
+  label: string
+  icon: string
+  color: TailwindColor
+}
 
 export interface Question {
   id: string

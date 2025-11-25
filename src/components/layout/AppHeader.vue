@@ -29,12 +29,22 @@ function goToStats() {
       <h1 class="font-bold text-lg tracking-tight">QuizMaster</h1>
     </div>
 
-    <button @click="goToStats" class="p-2 rounded-full hover:bg-slate-100 transition relative">
-      <i class="ph ph-chart-bar text-2xl text-slate-600"></i>
-      <span
-        v-if="showStatsBadge"
-        class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
-      ></span>
-    </button>
+    <div class="flex items-center gap-1">
+      <RouterLink
+        to="/settings/categories"
+        class="p-2 rounded-full hover:bg-slate-100 transition"
+        title="Gestion des catégories"
+      >
+        <PhosphorIcon :weight="'bold'" :size="24">Gear</PhosphorIcon>
+      </RouterLink>
+
+      <button @click="goToStats" class="p-2 rounded-full hover:bg-slate-100 transition relative">
+        <i class="ph ph-chart-bar text-2xl text-slate-600"></i>
+        <span
+          v-if="showStatsBadge"
+          class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
+        ></span>
+      </button>
+    </div>
   </header>
 </template>

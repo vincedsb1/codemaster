@@ -33,6 +33,14 @@ function initDatabase(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(DB_CONFIG.STORES.META)) {
         db.createObjectStore(DB_CONFIG.STORES.META, { keyPath: 'id' })
       }
+
+      // Store Categories
+      if (!db.objectStoreNames.contains(DB_CONFIG.STORES.CATEGORIES)) {
+        const cStore = db.createObjectStore(DB_CONFIG.STORES.CATEGORIES, {
+          keyPath: 'id',
+        })
+        cStore.createIndex('label', 'label', { unique: true })
+      }
     }
 
     req.onsuccess = () => {

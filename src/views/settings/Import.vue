@@ -3,12 +3,16 @@ import { ref } from 'vue'
 import { useDataStore } from '@/stores/useDataStore'
 import { useStatsStore } from '@/stores/useStatsStore'
 import { sessionRepository } from '@/db/repositories'
+import ModalSelectCategory from '@/components/settings/ModalSelectCategory.vue'
 
 const dataStore = useDataStore()
 const statsStore = useStatsStore()
 
 const importMessage = ref('')
 const importError = ref(false)
+const showCategoryModal = ref(false)
+const pendingJson = ref<Array<Record<string, unknown>> | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
 
 async function handleFileUpload(event: Event) {
   const target = event.target as HTMLInputElement
@@ -18,17 +22,65 @@ async function handleFileUpload(event: Event) {
   const reader = new FileReader()
   reader.onload = async (e) => {
     try {
-      const json = JSON.parse(e.target?.result as string)
-      const result = await dataStore.importQuestions(json)
-      importMessage.value = `Import réussi ! ${result.count} questions chargées.`
-      importError.value = false
-      target.value = ''
+      const json: Array<Record<string, unknown>> = JSON.parse(e.target?.result as string)
+
+      // Store JSON and show category selection modal
+      pendingJson.value = json
+      showCategoryModal.value = true
     } catch (err) {
-      importMessage.value = err instanceof Error ? err.message : 'Erreur lors de l\'import'
+      importMessage.value =
+        err instanceof Error ? err.message : 'Erreur lors du parsing du JSON'
       importError.value = true
+      target.value = ''
     }
   }
   reader.readAsText(file)
+}
+
+async function handleCategorySelected(categoryLabel: string) {
+  if (!pendingJson.value) return
+
+  try {
+    // Create category if it doesn't exist
+    const existingCategory = dataStore.getCategoryByLabel(categoryLabel)
+    if (!existingCategory) {
+      // Auto-create category with default values
+      await dataStore.addCategory({
+        id: `cat_${Date.now()}`,
+        label: categoryLabel,
+        icon: 'Code',
+        color: 'blue',
+      })
+    }
+
+    // Import questions with target category
+    const result = await dataStore.importQuestions(
+      pendingJson.value as Array<Record<string, unknown>>,
+      categoryLabel
+    )
+    importMessage.value = `Import réussi ! ${result.count} questions chargées.`
+    importError.value = false
+
+    // Reset
+    pendingJson.value = null
+    showCategoryModal.value = false
+    if (fileInput.value) {
+      fileInput.value.value = ''
+    }
+  } catch (err) {
+    importMessage.value = err instanceof Error ? err.message : 'Erreur lors de l\'import'
+    importError.value = true
+    pendingJson.value = null
+    showCategoryModal.value = false
+  }
+}
+
+function handleCategoryCancel() {
+  pendingJson.value = null
+  showCategoryModal.value = false
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
 }
 
 async function resetStats() {
@@ -55,6 +107,14 @@ async function resetStats() {
   <div class="p-4 space-y-6 h-full overflow-y-auto">
     <h2 class="text-xl font-bold">Gestion des données</h2>
 
+    <!-- Modal de sélection de catégorie -->
+    <ModalSelectCategory
+      :is-open="showCategoryModal"
+      :categories="dataStore.allCategories"
+      @select="handleCategorySelected"
+      @cancel="handleCategoryCancel"
+    />
+
     <!-- Import Section -->
     <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-4">
       <h3 class="font-bold text-slate-700">Importer des questions</h3>
@@ -62,6 +122,7 @@ async function resetStats() {
         Le fichier doit être un JSON valide contenant un tableau de questions.
       </p>
       <input
+        ref="fileInput"
         type="file"
         accept=".json"
         @change="handleFileUpload"
