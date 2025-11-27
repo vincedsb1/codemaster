@@ -6,14 +6,22 @@ const router = useRouter()
 const quizStore = useQuizStore()
 
 async function startQuiz(count: number) {
+  console.log('[Count] startQuiz called with count:', count)
+  console.log('[Count] Selected categories:', quizStore.selectedCategories)
+  console.log('[Count] Selected difficulty:', quizStore.selectedDifficulty)
+
   try {
+    console.log('[Count] Creating quiz session...')
     await quizStore.createQuizSession(
       quizStore.selectedCategories,
       quizStore.selectedDifficulty!,
       count,
     )
-    router.push('/quiz/active')
+    console.log('[Count] Quiz session created successfully')
+    console.log('[Count] Navigating to quiz/active')
+    await router.push({ name: 'quiz-active' })
   } catch (error) {
+    console.error('[Count] Error starting quiz:', error)
     alert(error instanceof Error ? error.message : 'Erreur lors du démarrage du quiz')
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-    <h2 class="text-lg font-semibold mb-4">
+    <h2 class="text-lg font-semibold mb-6">
       {{ categorie ? 'Modifier la catégorie' : 'Ajouter une catégorie' }}
     </h2>
 
@@ -25,21 +25,21 @@
         <label for="icon" class="block text-sm font-medium text-slate-700 mb-2">
           Icône
         </label>
-        <div class="grid grid-cols-4 gap-2">
+        <div class="grid grid-cols-6 gap-2">
           <button
             v-for="icon in availableIcons"
             :key="icon"
             type="button"
             @click="form.icon = icon"
             :class="[
-              'p-3 border-2 rounded-lg transition flex items-center justify-center',
+              'p-2 border-2 rounded-lg transition flex items-center justify-center',
               form.icon === icon
                 ? 'border-indigo-500 bg-indigo-50'
                 : 'border-slate-200 hover:border-slate-300',
             ]"
             :title="icon"
           >
-            <PhosphorIcon :size="24">{{ icon }}</PhosphorIcon>
+            <PhosphorIcon :size="20">{{ icon }}</PhosphorIcon>
           </button>
         </div>
         <p v-if="errors.icon" class="mt-1 text-sm text-red-600">{{ errors.icon }}</p>
@@ -59,7 +59,7 @@
             :class="[
               'w-10 h-10 rounded-lg border-2 transition',
               form.color === color ? 'border-slate-800' : 'border-slate-300',
-              `bg-${color}-500`,
+              colorMap[color],
             ]"
             :title="color"
           ></button>
@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, toRaw } from 'vue'
 import type { Category } from '@/types/models'
 
 interface Props {
@@ -113,7 +113,6 @@ const emit = defineEmits<{
 
 const availableIcons = [
   'Code',
-  'React',
   'Rocket',
   'Cpu',
   'Palette',
@@ -123,29 +122,40 @@ const availableIcons = [
   'Microscope',
   'Globe',
   'Lightning',
-  'BookOpen',
-  'MoonStars',
+  'Book',
+  'Moon',
   'Bug',
   'Wine',
   'Sparkle',
+  'Lightbulb',
+  'Gear',
+  'Wrench',
+  'Hammer',
+  'Square',
+  'Star',
+  'Heart',
+  'Flag',
+  'Target',
 ]
 
-const availableColors = [
-  'slate',
-  'red',
-  'orange',
-  'amber',
-  'yellow',
-  'lime',
-  'green',
-  'emerald',
-  'teal',
-  'cyan',
-  'blue',
-  'indigo',
-  'purple',
-  'pink',
-]
+const colorMap: Record<string, string> = {
+  slate: 'bg-slate-500',
+  red: 'bg-red-500',
+  orange: 'bg-orange-500',
+  amber: 'bg-amber-500',
+  yellow: 'bg-yellow-500',
+  lime: 'bg-lime-500',
+  green: 'bg-green-500',
+  emerald: 'bg-emerald-500',
+  teal: 'bg-teal-500',
+  cyan: 'bg-cyan-500',
+  blue: 'bg-blue-500',
+  indigo: 'bg-indigo-500',
+  purple: 'bg-purple-500',
+  pink: 'bg-pink-500',
+}
+
+const availableColors = Object.keys(colorMap)
 
 const form = ref<FormData>({
   label: '',
@@ -159,10 +169,12 @@ watch(
   () => props.categorie,
   (newCat) => {
     if (newCat) {
+      // Use toRaw to unwrap Vue reactivity
+      const raw = toRaw(newCat)
       form.value = {
-        label: newCat.label,
-        icon: newCat.icon,
-        color: newCat.color,
+        label: raw.label,
+        icon: raw.icon,
+        color: raw.color,
       }
     } else {
       form.value = {
@@ -206,11 +218,12 @@ const validate = (): boolean => {
 const handleSubmit = () => {
   if (!validate()) return
 
+  const rawForm = toRaw(form.value)
   const category: Category = {
     id: props.categorie?.id || `cat_${Date.now()}`,
-    label: form.value.label,
-    icon: form.value.icon,
-    color: form.value.color as any,
+    label: rawForm.label,
+    icon: rawForm.icon,
+    color: rawForm.color as any,
   }
 
   emit('submit', category)

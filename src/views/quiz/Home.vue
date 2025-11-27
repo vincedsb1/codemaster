@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDataStore } from '@/stores/useDataStore'
 import { useQuizStore } from '@/stores/useQuizStore'
@@ -11,8 +11,48 @@ const quizStore = useQuizStore()
 
 // Get categories that have questions
 const categoriesDisponibles = computed(() => {
+  console.log('[Home] Computing available categories...')
+  console.log('[Home] Total questions in store:', dataStore.questions.length)
+  console.log('[Home] All questions:', dataStore.questions.map((q) => ({ id: q.id, cat: q.categorie })).slice(0, 3))
+
   const questionsCategories = new Set(dataStore.questions.map((q) => q.categorie))
-  return dataStore.allCategories.filter((cat) => questionsCategories.has(cat.label))
+  console.log('[Home] Question categories found:', Array.from(questionsCategories))
+  console.log('[Home] Available category IDs:', dataStore.allCategories.map((c) => c.id))
+
+  const available = dataStore.allCategories.filter((cat) => {
+    const hasQuestions = questionsCategories.has(cat.id)
+    console.log(`[Home] Category "${cat.label}" (id=${cat.id}): ${hasQuestions ? '✓ has questions' : '✗ no questions'}`)
+    return hasQuestions
+  })
+  console.log('[Home] Available categories:', available.map((c) => c.label))
+  return available
+})
+
+// Manual reload function
+async function reloadQuestionsManual() {
+  console.log('[Home] User clicked reload button')
+  try {
+    await dataStore.reloadQuestions()
+    console.log('[Home] Questions reloaded, now have:', dataStore.questions.length)
+  } catch (err) {
+    console.error('[Home] Error reloading questions:', err)
+  }
+}
+
+onMounted(async () => {
+  console.log('[Home] Home page mounted')
+  console.log('[Home] Initial question count:', dataStore.questions.length)
+
+  // Ensure questions are loaded (in case they were imported while away)
+  if (dataStore.questions.length === 0) {
+    console.log('[Home] No questions loaded yet, reloading from IndexedDB...')
+    try {
+      await dataStore.reloadQuestions()
+      console.log('[Home] Reloaded, now have:', dataStore.questions.length, 'questions')
+    } catch (err) {
+      console.error('[Home] Error reloading questions:', err)
+    }
+  }
 })
 
 // Get category labels for random config
@@ -68,7 +108,38 @@ function goToImport() {
       <p class="text-slate-500">Prêt pour un entraînement ? Choisis une catégorie.</p>
     </div>
 
-    <div class="grid grid-cols-2 gap-3">
+    <!-- No categories message -->
+    <div v-if="categoriesDisponibles.length === 0" class="space-y-4">
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 space-y-4">
+        <div class="flex gap-3">
+          <i class="ph ph-warning text-amber-600 text-2xl flex-shrink-0 mt-1"></i>
+          <div>
+            <h3 class="font-bold text-amber-900 mb-1">Aucune catégorie disponible</h3>
+            <p class="text-sm text-amber-800">
+              Vous devez d'abord charger les questions depuis les fichiers JSON.
+              Allez dans "Gestion des données" et cliquez sur les boutons "+" pour charger les catégories.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button
+            @click="reloadQuestionsManual"
+            class="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition text-sm"
+          >
+            <i class="ph ph-reload"></i> Recharger
+          </button>
+          <button
+            @click="goToImport"
+            class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition text-sm"
+          >
+            <i class="ph ph-download-simple"></i> Aller à Import
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories grid -->
+    <div v-if="categoriesDisponibles.length > 0" class="grid grid-cols-2 gap-3">
       <button
         v-for="cat in categoriesDisponibles"
         :key="cat.id"
@@ -92,6 +163,7 @@ function goToImport() {
 
     <!-- Random Selection -->
     <button
+      v-if="categoriesDisponibles.length > 0"
       @click="openRandomConfig"
       class="w-full p-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-md text-white flex items-center justify-between group active:scale-95 transition"
     >

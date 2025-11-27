@@ -47,14 +47,14 @@
 
           <div>
             <label class="text-xs font-medium text-slate-600 mb-1 block">Icône</label>
-            <div class="grid grid-cols-4 gap-1">
+            <div class="grid grid-cols-6 gap-1">
               <button
                 v-for="icon in availableIcons"
                 :key="icon"
                 type="button"
                 @click="newCategory.icon = icon"
                 :class="[
-                  'p-2 border-2 rounded text-sm transition',
+                  'p-1 border-2 rounded text-sm transition flex items-center justify-center',
                   newCategory.icon === icon
                     ? 'border-indigo-500 bg-indigo-50'
                     : 'border-slate-200 hover:border-slate-300',
@@ -77,7 +77,7 @@
                 :class="[
                   'w-6 h-6 rounded border-2 transition',
                   newCategory.color === color ? 'border-slate-800' : 'border-slate-300',
-                  `bg-${color}-500`,
+                  colorMap[color],
                 ]"
                 :title="color"
               ></button>
@@ -137,7 +137,6 @@ const selectedCategory = ref<string>('')
 
 const availableIcons = [
   'Code',
-  'React',
   'Rocket',
   'Cpu',
   'Palette',
@@ -147,29 +146,40 @@ const availableIcons = [
   'Microscope',
   'Globe',
   'Lightning',
-  'BookOpen',
-  'MoonStars',
+  'Book',
+  'Moon',
   'Bug',
   'Wine',
   'Sparkle',
+  'Lightbulb',
+  'Gear',
+  'Wrench',
+  'Hammer',
+  'Square',
+  'Star',
+  'Heart',
+  'Flag',
+  'Target',
 ]
 
-const availableColors = [
-  'slate',
-  'red',
-  'orange',
-  'amber',
-  'yellow',
-  'lime',
-  'green',
-  'emerald',
-  'teal',
-  'cyan',
-  'blue',
-  'indigo',
-  'purple',
-  'pink',
-]
+const colorMap: Record<string, string> = {
+  slate: 'bg-slate-500',
+  red: 'bg-red-500',
+  orange: 'bg-orange-500',
+  amber: 'bg-amber-500',
+  yellow: 'bg-yellow-500',
+  lime: 'bg-lime-500',
+  green: 'bg-green-500',
+  emerald: 'bg-emerald-500',
+  teal: 'bg-teal-500',
+  cyan: 'bg-cyan-500',
+  blue: 'bg-blue-500',
+  indigo: 'bg-indigo-500',
+  purple: 'bg-purple-500',
+  pink: 'bg-pink-500',
+}
+
+const availableColors = Object.keys(colorMap)
 
 const newCategory = ref({
   label: '',

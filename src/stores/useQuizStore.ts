@@ -42,6 +42,10 @@ export const useQuizStore = defineStore('quiz', () => {
     )
   })
 
+  const isQuizFinished = computed(() =>
+    activeSession.value?.dateFin !== null && activeSession.value !== null
+  )
+
   // Actions
   async function checkResumableSession() {
     try {
@@ -68,18 +72,37 @@ export const useQuizStore = defineStore('quiz', () => {
     }
   }
 
+  function clearActiveSession() {
+    activeSession.value = null
+  }
+
   async function createQuizSession(
     categories: string[],
     difficulty: Difficulty,
     count: number,
   ) {
+    // Convert Proxy array to plain array
+    const cleanCategories = Array.isArray(categories) ? [...categories] : []
+    console.log('[QuizStore] createQuizSession called with:', { categories: cleanCategories, difficulty, count })
+
     const dataStore = useDataStore()
+    console.log('[QuizStore] Total questions in store:', dataStore.questions.length)
+
+    // Convert category labels to IDs
+    const categoryIds = cleanCategories.map((catLabel) => {
+      const found = dataStore.allCategories.find((c) => c.label === catLabel)
+      console.log(`[QuizStore] Converting label "${catLabel}" to ID "${found?.id || catLabel}"`)
+      return found?.id || catLabel
+    })
+    console.log('[QuizStore] Category IDs for filtering:', categoryIds)
 
     // Filter questions by category and difficulty
-    let pool = dataStore.questions.filter((q) => categories.includes(q.categorie))
+    let pool = dataStore.questions.filter((q) => categoryIds.includes(q.categorie))
+    console.log('[QuizStore] Questions after category filter:', pool.length)
 
     if (difficulty !== 'random') {
       pool = pool.filter((q) => q.difficulte === difficulty)
+      console.log('[QuizStore] Questions after difficulty filter:', pool.length)
     }
 
     // Sort by appearance count (least seen first), then random
@@ -102,6 +125,8 @@ export const useQuizStore = defineStore('quiz', () => {
       } as SessionQuestion
     })
 
+    console.log('[QuizStore] Questions selected for quiz:', questionsToPlay.length)
+
     if (questionsToPlay.length === 0) {
       throw new Error('Pas assez de questions disponibles pour cette sélection')
     }
@@ -118,14 +143,18 @@ export const useQuizStore = defineStore('quiz', () => {
       scorePondereMax: 0,
       notePourcentage: 0,
       difficulteChoisie: difficulty,
-      categories,
+      categories: cleanCategories,
     }
+
+    console.log('[QuizStore] Quiz session created:', { sessionId: session.sessionId, nbQuestions: session.nbQuestions })
 
     activeSession.value = session
     resetQuestionState()
 
+    console.log('[QuizStore] Saving session to DB...')
     // Save to DB
     await sessionRepository.save(session)
+    console.log('[QuizStore] Session saved to DB')
   }
 
   function resetQuestionState() {
@@ -186,6 +215,7 @@ export const useQuizStore = defineStore('quiz', () => {
     if (!activeSession.value) return
 
     if (isLastQuestion.value) {
+      console.log('[QuizStore] Last question - finishing quiz')
       await finishQuiz()
     } else {
       activeSession.value.indexQuestionCourante++
@@ -235,6 +265,9 @@ export const useQuizStore = defineStore('quiz', () => {
 
     // Reload stats for display
     await statsStore.loadStats()
+
+    // Keep session for Summary page to display results
+    console.log('[QuizStore] Quiz finished - score:', activeSession.value.notePourcentage.toFixed(1) + '%')
   }
 
   // Category selection helpers
@@ -254,6 +287,15 @@ export const useQuizStore = defineStore('quiz', () => {
     selectedDifficulty.value = difficulty
   }
 
+  function getReplayParams() {
+    if (!activeSession.value) return null
+    return {
+      categories: [...activeSession.value.categories],
+      difficulty: activeSession.value.difficulteChoisie,
+      count: activeSession.value.nbQuestions
+    }
+  }
+
   return {
     // State
     activeSession,
@@ -269,11 +311,13 @@ export const useQuizStore = defineStore('quiz', () => {
     currentQuestionIndex,
     progressPercent,
     isLastQuestion,
+    isQuizFinished,
 
     // Actions
     checkResumableSession,
     resumePreviousSession,
     abandonSession,
+    clearActiveSession,
     createQuizSession,
     submitAnswer,
     skipQuestion,
@@ -282,5 +326,6 @@ export const useQuizStore = defineStore('quiz', () => {
     openRandomConfig,
     validateRandomSelection,
     selectDifficulty,
+    getReplayParams,
   }
 })

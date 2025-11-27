@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { SessionQuestion } from '@/types/models'
-import { DIFFICULTY_COLORS } from '@/types/constants'
+import { DIFFICULTY_COLORS, DEFAULT_CATEGORIES } from '@/types/constants'
+import { computed } from 'vue'
 import AnswerOption from './AnswerOption.vue'
 
 interface Props {
@@ -18,6 +19,11 @@ const emits = defineEmits<{
 }>()
 
 const difficultyColor = DIFFICULTY_COLORS[props.question.difficulte] || DIFFICULTY_COLORS.moyen
+
+// Get category label from category ID
+const currentCategory = computed(() => {
+  return DEFAULT_CATEGORIES.find((cat) => cat.id === props.question.categorie)
+})
 </script>
 
 <template>
@@ -25,11 +31,30 @@ const difficultyColor = DIFFICULTY_COLORS[props.question.difficulte] || DIFFICUL
     <!-- Question info -->
     <div class="mb-2 flex justify-between items-center text-sm text-slate-500 font-medium">
       <span>Question {{ questionNumber }}/{{ totalQuestions }}</span>
-      <span
-        class="px-2 py-0.5 rounded text-xs uppercase font-bold tracking-wider bg-yellow-100 text-yellow-700"
-      >
-        {{ question.difficulte }}
-      </span>
+      <div class="flex items-center gap-2">
+        <!-- Category badge -->
+        <span
+          v-if="currentCategory"
+          :class="[
+            'px-2 py-0.5 rounded text-xs uppercase font-bold tracking-wider',
+            currentCategory.color === 'blue' && 'bg-blue-100 text-blue-700',
+            currentCategory.color === 'cyan' && 'bg-cyan-100 text-cyan-700',
+            currentCategory.color === 'slate' && 'bg-slate-100 text-slate-700',
+            currentCategory.color === 'green' && 'bg-green-100 text-green-700',
+            currentCategory.color === 'purple' && 'bg-purple-100 text-purple-700',
+            currentCategory.color === 'yellow' && 'bg-yellow-100 text-yellow-700',
+            currentCategory.color === 'indigo' && 'bg-indigo-100 text-indigo-700',
+          ]"
+        >
+          {{ currentCategory.label }}
+        </span>
+        <!-- Difficulty badge -->
+        <span
+          class="px-2 py-0.5 rounded text-xs uppercase font-bold tracking-wider bg-yellow-100 text-yellow-700"
+        >
+          {{ question.difficulte }}
+        </span>
+      </div>
     </div>
 
     <!-- Question text -->

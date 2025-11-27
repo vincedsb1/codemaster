@@ -15,6 +15,7 @@ import SummaryView from '@/views/quiz/Summary.vue'
 // Other Views
 import StatsView from '@/views/stats/Index.vue'
 import ImportView from '@/views/settings/Import.vue'
+import SelectCategoryView from '@/views/settings/SelectCategory.vue'
 import CategoriesView from '@/views/settings/Categories.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -63,8 +64,13 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'settings/import',
-        name: 'import',
+        name: 'settings-import',
         component: ImportView,
+      },
+      {
+        path: 'settings/select-category',
+        name: 'settings-select-category',
+        component: SelectCategoryView,
       },
       {
         path: 'settings/categories',
