@@ -24,9 +24,9 @@ function goToStats() {
   >
     <div class="flex items-center gap-2 cursor-pointer" @click="goHome">
       <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-        Q
+        C
       </div>
-      <h1 class="font-bold text-lg tracking-tight">QuizMaster</h1>
+      <h1 class="font-bold text-lg tracking-tight">CodeMaster</h1>
     </div>
 
     <div class="flex items-center gap-1">

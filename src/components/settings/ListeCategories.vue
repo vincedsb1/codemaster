@@ -1,18 +1,14 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-slate-200">
-      <h2 class="text-lg font-semibold">Catégories existantes</h2>
+  <div class="px-4">
+    <div v-if="categories.length === 0" class="text-center py-12">
+      <p class="text-slate-500">Aucune catégorie créée.</p>
     </div>
 
-    <div v-if="categories.length === 0" class="px-6 py-8 text-center">
-      <p class="text-slate-500">Aucune catégorie créée. Ajoutez-en une ci-dessus.</p>
-    </div>
-
-    <div v-else class="space-y-2 p-4">
+    <div v-else class="space-y-3">
       <div
         v-for="category in categories"
         :key="category.id"
-        class="relative overflow-hidden rounded-lg border border-slate-200"
+        class="relative overflow-hidden rounded-xl border border-slate-200"
         @touchstart="handleTouchStart($event, category.id)"
         @touchmove="handleTouchMove($event, category.id)"
         @touchend="handleTouchEnd(category.id)"
@@ -28,10 +24,11 @@
           </button>
         </div>
 
-        <!-- Main category row (swipeable) -->
-        <div
+        <!-- Main category row (swipeable, fully clickable) -->
+        <button
           :style="{ transform: `translateX(${swipeOffsets[category.id] || 0}px)` }"
-          class="relative bg-white p-4 flex items-center justify-between gap-3 transition-transform"
+          @click="$emit('category-click', category.id)"
+          class="relative w-full bg-white p-4 flex items-center gap-3 transition-transform cursor-pointer hover:bg-slate-50 active:bg-slate-100"
         >
           <!-- Icon and label -->
           <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -43,27 +40,21 @@
             >
               <PhosphorIcon :size="20">{{ category.icon }}</PhosphorIcon>
             </div>
-            <div class="min-w-0 flex-1">
+            <div class="min-w-0 flex-1 text-left">
               <p class="font-medium text-slate-900 truncate">{{ category.label }}</p>
               <p class="text-xs text-slate-500">
-                {{ getQuestionCountForCategory(category.label) }} question<span v-if="getQuestionCountForCategory(category.label) !== 1">s</span>
+                {{ getQuestionCountForCategory(category.id) }} question<span v-if="getQuestionCountForCategory(category.id) !== 1">s</span>
               </p>
             </div>
           </div>
 
-          <!-- Edit button (icon only) -->
-          <button
-            @click="$emit('edit', category)"
-            class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition flex-shrink-0"
-            title="Modifier"
-          >
-            <PhosphorIcon :size="20">Pencil</PhosphorIcon>
-          </button>
-        </div>
+          <!-- Chevron indicator -->
+          <PhosphorIcon :size="20" class="text-slate-400 flex-shrink-0">CaretRight</PhosphorIcon>
+        </button>
       </div>
 
       <!-- Swipe hint for mobile -->
-      <p class="text-xs text-slate-500 text-center md:hidden mt-2">
+      <p class="text-xs text-slate-500 text-center md:hidden mt-4">
         Swipe à gauche pour supprimer
       </p>
     </div>
@@ -82,7 +73,7 @@ interface Props {
 const props = defineProps<Props>()
 
 defineEmits<{
-  edit: [category: Category]
+  'category-click': [categoryId: string]
   delete: [categoryId: string]
 }>()
 
@@ -186,7 +177,7 @@ const colorBadgeTextMap: Record<string, string> = {
   pink: 'text-pink-700',
 }
 
-const getQuestionCountForCategory = (label: string): number => {
-  return props.questions.filter((q) => q.categorie === label).length
+const getQuestionCountForCategory = (categoryId: string): number => {
+  return props.questions.filter((q) => q.categorie === categoryId).length
 }
 </script>

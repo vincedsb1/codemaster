@@ -3,6 +3,7 @@ import type { SessionQuestion } from '@/types/models'
 import { DIFFICULTY_COLORS, DEFAULT_CATEGORIES } from '@/types/constants'
 import { computed } from 'vue'
 import AnswerOption from './AnswerOption.vue'
+import MarkdownText from '@/components/common/MarkdownText.vue'
 
 interface Props {
   question: SessionQuestion
@@ -58,8 +59,8 @@ const currentCategory = computed(() => {
     </div>
 
     <!-- Question text -->
-    <h3 class="text-xl font-bold text-slate-900 mb-6 leading-tight">
-      {{ question.intitule }}
+    <h3 class="text-xl font-semibold text-slate-900 mb-6 leading-tight">
+      <MarkdownText :text="question.intitule" />
     </h3>
 
     <!-- Answers -->
@@ -84,7 +85,7 @@ const currentCategory = computed(() => {
       <div class="font-bold mb-1 flex items-center gap-2">
         <i class="ph ph-info"></i> Explication
       </div>
-      {{ question.explication }}
+      <MarkdownText :text="question.explication" />
     </div>
   </div>
 </template>
