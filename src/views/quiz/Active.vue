@@ -16,9 +16,20 @@ function handleSkip() {
 }
 
 async function handleNext() {
-  await quizStore.nextQuestion()
-  if (!quizStore.activeSession) {
-    router.push('/quiz/summary')
+  const timestamp = new Date().toISOString()
+  console.log(`[Active] handleNext called at ${timestamp}`)
+  try {
+    console.log(`[Active] Calling quizStore.nextQuestion() at ${timestamp}...`)
+    const result = await quizStore.nextQuestion()
+    console.log(`[Active] nextQuestion returned: ${result} at ${timestamp}`)
+    console.log(`[Active] isQuizFinished is now:`, quizStore.isQuizFinished)
+    if (quizStore.isQuizFinished) {
+      console.log(`[Active] Quiz finished, navigating to summary at ${timestamp}`)
+      await router.push({ name: 'summary' })
+      console.log(`[Active] Navigation to summary complete at ${timestamp}`)
+    }
+  } catch (err) {
+    console.error(`[Active] Error in handleNext at ${timestamp}:`, err)
   }
 }
 </script>

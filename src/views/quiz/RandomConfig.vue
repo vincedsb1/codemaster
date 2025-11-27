@@ -10,8 +10,17 @@ const quizStore = useQuizStore()
 
 // Get categories that have questions
 const categoriesDisponibles = computed(() => {
+  console.log('[RandomConfig] Computing available categories...')
   const questionsCategories = new Set(dataStore.questions.map((q) => q.categorie))
-  return dataStore.allCategories.filter((cat) => questionsCategories.has(cat.label))
+  console.log('[RandomConfig] Question category IDs:', Array.from(questionsCategories))
+
+  const available = dataStore.allCategories.filter((cat) => {
+    const hasQuestions = questionsCategories.has(cat.id)
+    console.log(`[RandomConfig] Category "${cat.label}" (id=${cat.id}): ${hasQuestions ? '✓ has questions' : '✗ no questions'}`)
+    return hasQuestions
+  })
+  console.log('[RandomConfig] Available categories:', available.map((c) => c.label))
+  return available
 })
 
 const canValidate = computed(() => quizStore.randomCategoriesSelection.length > 0)
