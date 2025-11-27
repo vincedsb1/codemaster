@@ -17,6 +17,7 @@ import StatsView from '@/views/stats/Index.vue'
 import ImportView from '@/views/settings/Import.vue'
 import SelectCategoryView from '@/views/settings/SelectCategory.vue'
 import CategoriesView from '@/views/settings/Categories.vue'
+import CategoryEditView from '@/views/settings/CategoryEdit.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -76,6 +77,11 @@ const routes: RouteRecordRaw[] = [
         path: 'settings/categories',
         name: 'categories',
         component: CategoriesView,
+      },
+      {
+        path: 'settings/categories/edit',
+        name: 'category-edit',
+        component: CategoryEditView,
       },
     ],
   },

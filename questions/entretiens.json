@@ -9,7 +9,7 @@
       "Je préfère ne pas trop parler de moi, vous verrez sur le CV."
     ],
     "indexBonneReponse": 1,
-    "explication": "La réponse met en avant une présentation claire, cohérente avec le poste, et insiste sur l’auto-formation et la passion pour la tech.",
+    "explication": "La réponse met en avant une présentation claire, cohérente avec le poste, et insiste sur l’**auto-formation** et la passion pour la **tech**.",
     "categorie": "Entretien",
     "difficulte": "facile"
   },
@@ -29,7 +29,7 @@
   },
   {
     "id": "hr_003",
-    "intitule": "Pourquoi avoir choisi le développement web plutôt qu’un autre domaine ?",
+    "intitule": "Pourquoi avoir choisi le **développement web** plutôt qu’un autre domaine ?",
     "reponses": [
       "Parce que c’est un métier qui paye bien en ce moment.",
       "Parce que j’aime à la fois la partie technique et la partie visible pour l’utilisateur, et le web permet de concrétiser rapidement des idées et de les mettre dans les mains des gens.",
@@ -37,7 +37,7 @@
       "Je voulais faire quelque chose d’assez simple, le web a l’air moins compliqué que le reste."
     ],
     "indexBonneReponse": 1,
-    "explication": "La réponse montre une motivation profonde pour le web, centrée sur l’impact utilisateur et la création concrète.",
+    "explication": "La réponse montre une motivation profonde pour le **web**, centrée sur l’impact utilisateur et la création concrète.",
     "categorie": "Entretien",
     "difficulte": "facile"
   },
@@ -57,7 +57,7 @@
   },
   {
     "id": "hr_005",
-    "intitule": "Quelles sont vos principales qualités en tant que développeur web ?",
+    "intitule": "Quelles sont vos principales qualités en tant que **développeur web** ?",
     "reponses": [
       "Je suis surtout très rapide, je code plus vite que la plupart des développeurs.",
       "Je suis minutieux, persévérant et je prends le temps de comprendre le contexte avant de proposer des solutions.",
@@ -127,7 +127,7 @@
   },
   {
     "id": "hr_010",
-    "intitule": "Comment organisez-vous votre auto-formation au quotidien ?",
+    "intitule": "Comment organisez-vous votre **auto-formation** au quotidien ?",
     "reponses": [
       "Je regarde des vidéos quand j’ai le temps, sans vraie structure.",
       "Je planifie des créneaux réguliers, je regarde des contenus techniques en accéléré, en anglais, et je les relie à des projets concrets pour ancrer ce que j’apprends.",
@@ -135,7 +135,7 @@
       "Je ne me forme pas en dehors des heures de travail, ça ne m’intéresse pas."
     ],
     "indexBonneReponse": 1,
-    "explication": "La réponse montre une démarche volontaire, structurée et orientée pratique dans l’auto-formation.",
+    "explication": "La réponse montre une démarche volontaire, structurée et orientée pratique dans l’**auto-formation**.",
     "categorie": "Entretien",
     "difficulte": "facile"
   },
@@ -183,7 +183,7 @@
   },
   {
     "id": "hr_014",
-    "intitule": "Qu’attendez-vous de votre futur manager ?",
+    "intitule": "Qu’attendez-vous de votre futur **manager** ?",
     "reponses": [
       "Qu’il me laisse tranquille et ne pose pas de questions.",
       "Qu’il donne une vision claire, des priorités, des retours honnêtes, et qu’on puisse échanger ouvertement sur les améliorations possibles.",
@@ -197,7 +197,7 @@
   },
   {
     "id": "hr_015",
-    "intitule": "Qu’est-ce qui vous attire dans le poste de développeur web chez nous ?",
+    "intitule": "Qu’est-ce qui vous attire dans le poste de **développeur web** chez nous ?",
     "reponses": [
       "Le poste a l’air simple, ça ne devrait pas être trop compliqué.",
       "La combinaison entre vos enjeux produits, votre stack technique et la possibilité de contribuer à l’amélioration continue des process me motive beaucoup.",
@@ -253,7 +253,7 @@
   },
   {
     "id": "hr_019",
-    "intitule": "Comment montrez-vous votre passion pour la tech en entretien ?",
+    "intitule": "Comment montrez-vous votre passion pour la **tech** en entretien ?",
     "reponses": [
       "Je dis simplement que je suis passionné.",
       "Je parle de mes habitudes d’auto-formation, de projets perso, et de la manière dont je relie mes centres d’intérêt (design, crypto, immobilier) à des sujets techniques.",
@@ -337,7 +337,7 @@
   },
   {
     "id": "hr_025",
-    "intitule": "Comment expliquez-vous votre choix de reconversion ou d’évolution vers le développement web ?",
+    "intitule": "Comment expliquez-vous votre choix de reconversion ou d’évolution vers le **développement web** ?",
     "reponses": [
       "Je dis que je n’avais plus le choix dans mon ancien domaine.",
       "Je montre le fil conducteur: la tech, la curiosité, l’envie de créer des solutions concrètes, et j’explique comment je me suis formé sérieusement pour être opérationnel.",
@@ -435,10 +435,10 @@
   },
   {
     "id": "hr_032",
-    "intitule": "Que répondez-vous si on vous demande: pourquoi le développement web et pas uniquement la crypto ou l’immobilier ?",
+    "intitule": "Que répondez-vous si on vous demande: pourquoi le **développement web** et pas uniquement la crypto ou l’immobilier ?",
     "reponses": [
       "Parce que la crypto ne marche plus très bien.",
-      "Parce que le développement web est au cœur de nombreux produits, et mes intérêts en crypto ou immobilier m’aident surtout à comprendre des contextes fonctionnels différents.",
+      "Parce que le **développement web** est au cœur de nombreux produits, et mes intérêts en crypto ou immobilier m’aident surtout à comprendre des contextes fonctionnels différents.",
       "Parce que l’immobilier est trop compliqué.",
       "Parce que le web est plus à la mode sur LinkedIn."
     ],
@@ -541,7 +541,7 @@
       "Je n’ai pas d’avis, je m’en fiche."
     ],
     "indexBonneReponse": 1,
-    "explication": "La réponse valorise la clarté et la capacité d’évolution, ce qui est réaliste dans une équipe tech.",
+    "explication": "La réponse valorise la clarté et la capacité d’évolution, ce qui est réaliste dans une équipe **tech**.",
     "categorie": "Entretien",
     "difficulte": "facile"
   },
@@ -631,7 +631,7 @@
   },
   {
     "id": "hr_046",
-    "intitule": "Décrivez votre relation idéale avec un manager technique.",
+    "intitule": "Décrivez votre relation idéale avec un **manager technique**.",
     "reponses": [
       "Qu’il ne se mêle pas de ce que je fais.",
       "Qu’il partage la vision, aide à lever les blocages, challenge les choix techniques et donne des feedbacks réguliers.",
@@ -687,7 +687,7 @@
   },
   {
     "id": "hr_050",
-    "intitule": "Comment vivez-vous le travail en méthode Agile ou Scrum du point de vue humain ?",
+    "intitule": "Comment vivez-vous le travail en méthode **Agile** ou **Scrum** du point de vue humain ?",
     "reponses": [
       "C’est surtout des réunions inutiles.",
       "J’apprécie le fait de découper le travail, d’avoir des feedbacks fréquents, et d’avoir des rituels qui favorisent la communication et la transparence.",
@@ -695,7 +695,7 @@
       "Je trouve que ça sert surtout à surveiller les gens."
     ],
     "indexBonneReponse": 1,
-    "explication": "La réponse met l’accent sur la communication, la transparence et l’amélioration continue, cœur d’Agile.",
+    "explication": "La réponse met l’accent sur la communication, la transparence et l’amélioration continue, cœur d’**Agile**.",
     "categorie": "Entretien",
     "difficulte": "moyen"
   },
@@ -715,9 +715,9 @@
   },
   {
     "id": "hr_052",
-    "intitule": "Comment gérez-vous le fait de devoir changer de priorité en cours de sprint ?",
+    "intitule": "Comment gérez-vous le fait de devoir changer de priorité en cours de **sprint** ?",
     "reponses": [
-      "Je refuse, ce n’est pas dans le sprint.",
+      "Je refuse, ce n’est pas dans le **sprint**.",
       "Je vérifie la raison du changement, son impact, on ajuste le périmètre avec le Product Owner et on communique clairement à l’équipe.",
       "Je change sans prévenir personne.",
       "Je laisse tout en plan et je commence la nouvelle tâche sans me soucier du reste."
@@ -855,7 +855,7 @@
   },
   {
     "id": "hr_062",
-    "intitule": "Comment réagissez-vous lorsqu’un sprint ne se passe pas comme prévu (objectifs non atteints) ?",
+    "intitule": "Comment réagissez-vous lorsqu’un **sprint** ne se passe pas comme prévu (objectifs non atteints) ?",
     "reponses": [
       "Je considère que ce n’est pas mon problème.",
       "Je participe à l’analyse des causes, j’assume ma part, et je propose des ajustements réalistes pour la suite.",
@@ -869,7 +869,7 @@
   },
   {
     "id": "hr_063",
-    "intitule": "Comment abordez-vous le fait de donner un feedback à votre manager ?",
+    "intitule": "Comment abordez-vous le fait de donner un feedback à votre **manager** ?",
     "reponses": [
       "Je ne donne jamais de feedback à mon manager.",
       "Je prépare ce que je veux dire, je reste factuel, orienté solutions, et je choisis un moment approprié pour en parler calmement.",
@@ -911,7 +911,7 @@
   },
   {
     "id": "hr_066",
-    "intitule": "Comment réagissez-vous si votre manager ne prend jamais vos idées en compte ?",
+    "intitule": "Comment réagissez-vous si votre **manager** ne prend jamais vos idées en compte ?",
     "reponses": [
       "Je me braque et je ne propose plus rien.",
       "Je demande un échange pour comprendre ses critères, j’illustre mes idées avec des exemples concrets, et si ça ne bouge pas, je me demande si le contexte me convient à long terme.",
@@ -925,7 +925,7 @@
   },
   {
     "id": "hr_067",
-    "intitule": "Comment gérez-vous un désaccord sur la manière d’appliquer une méthode Agile (Scrum, Kanban) ?",
+    "intitule": "Comment gérez-vous un désaccord sur la manière d’appliquer une méthode **Agile** (Scrum, Kanban) ?",
     "reponses": [
       "Je dis que l’Agile ne sert à rien.",
       "Je propose de tester une adaptation sur un temps donné, de mesurer l’impact et de décider ensuite ensemble.",
@@ -956,7 +956,7 @@
     "intitule": "Comment répartissez-vous votre temps entre tickets urgents et tâches de fond (refacto, qualité) ?",
     "reponses": [
       "Je ne fais que l’urgent.",
-      "Je discute avec le manager ou le Product Owner pour garder un minimum de temps pour la qualité et la dette technique, tout en gérant les urgences.",
+      "Je discute avec le **manager** ou le Product Owner pour garder un minimum de temps pour la qualité et la dette technique, tout en gérant les urgences.",
       "Je ne fais que de la refacto.",
       "Je décide tout seul de ce qui est important."
     ],
@@ -1037,7 +1037,7 @@
   },
   {
     "id": "hr_075",
-    "intitule": "Comment décririez-vous votre méthode pour apprendre une nouvelle techno ?",
+    "intitule": "Comment décririez-vous votre méthode pour apprendre une nouvelle **techno** ?",
     "reponses": [
       "Je teste un peu au hasard.",
       "Je commence par les bases, je fais rapidement un petit projet, je regarde de la doc et des vidéos, puis j’approfondis en liant à un cas réel.",
@@ -1065,7 +1065,7 @@
   },
   {
     "id": "hr_077",
-    "intitule": "Comment abordez-vous un 1:1 (entretien individuel régulier) avec votre manager ?",
+    "intitule": "Comment abordez-vous un 1:1 (entretien individuel régulier) avec votre **manager** ?",
     "reponses": [
       "Je viens sans sujet, c’est son problème.",
       "Je prépare quelques points: avancement, blocages, feedbacks, envies d’évolution, et j’utilise ce moment pour ajuster la façon de travailler.",
@@ -1082,7 +1082,7 @@
     "intitule": "Comment réagissez-vous si votre vie perso traverse une période compliquée tout en ayant un gros projet au travail ?",
     "reponses": [
       "Je garde tout pour moi et j’attends que ça passe.",
-      "Je garde ce que je veux privé, mais si cela risque d’impacter mon travail, j’en parle en termes d’organisation avec mon manager pour ajuster temporairement.",
+      "Je garde ce que je veux privé, mais si cela risque d’impacter mon travail, j’en parle en termes d’organisation avec mon **manager** pour ajuster temporairement.",
       "Je disparais sans prévenir.",
       "Je dis que le travail n’est plus une priorité et je ne fais plus d’efforts."
     ],
@@ -1124,7 +1124,7 @@
     "intitule": "Pourquoi vous plutôt qu’un autre candidat ?",
     "reponses": [
       "Parce que je suis meilleur que la plupart des développeurs que vous avez vus.",
-      "Parce que mon profil combine une vraie passion pour la tech, une forte capacité d’auto-apprentissage et une façon de travailler calme, rigoureuse et orientée problème.",
+      "Parce que mon profil combine une vraie passion pour la **tech**, une forte capacité d’auto-apprentissage et une façon de travailler calme, rigoureuse et orientée problème.",
       "Parce que j’ai besoin de ce poste.",
       "Parce que je peux tout faire sans qu’on me dise quoi que ce soit."
     ],
@@ -1167,7 +1167,7 @@
     "reponses": [
       "Je n’en ai aucune idée et ça ne m’intéresse pas.",
       "Avec un niveau technique plus poussé, plus de responsabilités sur la qualité des produits, et peut-être dans un rôle où je peux aussi accompagner d’autres développeurs.",
-      "Dans un poste complètement différent, sans lien avec la tech.",
+      "Dans un poste complètement différent, sans lien avec la **tech**.",
       "À la retraite si possible."
     ],
     "indexBonneReponse": 1,
@@ -1194,7 +1194,7 @@
     "intitule": "Comment gérez-vous un conflit grave avec un collègue qui impacte le travail ?",
     "reponses": [
       "Je coupe toute communication avec lui.",
-      "J’essaie d’abord de clarifier la situation en direct, et si on n’y arrive pas, je sollicite un tiers (manager, RH) pour trouver une solution structurée.",
+      "J’essaie d’abord de clarifier la situation en direct, et si on n’y arrive pas, je sollicite un tiers (**manager**, RH) pour trouver une solution structurée.",
       "Je monte les autres contre lui.",
       "Je menace de quitter l’entreprise si la personne reste."
     ],
@@ -1219,7 +1219,7 @@
   },
   {
     "id": "hr_088",
-    "intitule": "Comment réagissez-vous si un manager vous demande quelque chose qui va à l’encontre de vos valeurs (ex: manipuler des données utilisateur de façon douteuse) ?",
+    "intitule": "Comment réagissez-vous si un **manager** vous demande quelque chose qui va à l’encontre de vos valeurs (ex: manipuler des données utilisateur de façon douteuse) ?",
     "reponses": [
       "Je le fais, ce n’est pas mon problème.",
       "Je questionne la demande, j’explique mes réserves éthiques et, si besoin, j’escalade à un niveau approprié plutôt que de l’exécuter aveuglément.",
@@ -1275,10 +1275,10 @@
   },
   {
     "id": "hr_092",
-    "intitule": "Comment gérez-vous la situation où on vous promet des choses en entretien (techno, organisation) qui ne sont pas tenues une fois en poste ?",
+    "intitule": "Comment gérez-vous la situation où on vous promet des choses en entretien (**techno**, organisation) qui ne sont pas tenues une fois en poste ?",
     "reponses": [
       "Je me résigne et je ne dis rien.",
-      "Je fais un point avec mon manager pour confronter les attentes initiales et la réalité, et voir comment on peut se rapprocher de ce qui avait été présenté.",
+      "Je fais un point avec mon **manager** pour confronter les attentes initiales et la réalité, et voir comment on peut se rapprocher de ce qui avait été présenté.",
       "Je quitte immédiatement l’entreprise sans prévenir.",
       "Je me contente de râler auprès de mes collègues."
     ],
@@ -1334,7 +1334,7 @@
     "intitule": "Si l’entreprise traverse une période difficile (plan de restructuration, incertitudes), comment réagissez-vous ?",
     "reponses": [
       "Je panique et je cherche à partir immédiatement.",
-      "Je me renseigne sur la situation, j’évalue l’impact sur mon poste et mes valeurs, et je communique avec mon manager pour comprendre la vision à moyen terme.",
+      "Je me renseigne sur la situation, j’évalue l’impact sur mon poste et mes valeurs, et je communique avec mon **manager** pour comprendre la vision à moyen terme.",
       "Je fais comme si de rien n’était.",
       "Je propage des rumeurs dans l’équipe."
     ],
@@ -1387,7 +1387,7 @@
   },
   {
     "id": "hr_100",
-    "intitule": "Comment abordez-vous le fait que vous ayez plusieurs centres d’intérêt (tech, design, crypto, immobilier) sans paraître dispersé ?",
+    "intitule": "Comment abordez-vous le fait que vous ayez plusieurs centres d’intérêt (**tech**, design, crypto, immobilier) sans paraître dispersé ?",
     "reponses": [
       "Je dis que je change d’avis tout le temps.",
       "Je montre le fil conducteur: comprendre les systèmes, analyser, investir sur moi, et j’explique comment ces domaines nourrissent ma réflexion de développeur.",
@@ -1404,7 +1404,7 @@
     "intitule": "Que faites-vous si, une fois en poste, le rôle ne correspond pas du tout à ce qui était décrit (missions uniquement de maintenance, peu d’apprentissage) ?",
     "reponses": [
       "Je reste sans rien dire.",
-      "Je discute avec mon manager, je propose des ajustements, et si rien ne change, je réfléchis à moyen terme à un environnement plus aligné avec mes objectifs.",
+      "Je discute avec mon **manager**, je propose des ajustements, et si rien ne change, je réfléchis à moyen terme à un environnement plus aligné avec mes objectifs.",
       "Je démissionne du jour au lendemain.",
       "Je fais le strict minimum."
     ],
@@ -1429,7 +1429,7 @@
   },
   {
     "id": "hr_103",
-    "intitule": "Vous sentez qu’un manager utilise la peur pour gérer son équipe. Que faites-vous ?",
+    "intitule": "Vous sentez qu’un **manager** utilise la peur pour gérer son équipe. Que faites-vous ?",
     "reponses": [
       "Je m’adapte à ce mode de management.",
       "Je garde une posture professionnelle, j’en parle si possible en direct ou avec un interlocuteur RH, et je réfléchis à moyen terme à la compatibilité avec ce type de culture.",
@@ -1516,7 +1516,7 @@
     "intitule": "Si vous constatez que vos propres attentes évoluent (plus de liberté, plus de remote) mais que l’entreprise ne suit pas, que faites-vous ?",
     "reponses": [
       "Je subis la situation sans rien dire.",
-      "Je discute d’abord de ces attentes avec mon manager, je regarde les possibilités d’aménagement, puis j’évalue s’il est préférable de rester ou de chercher un contexte plus adapté.",
+      "Je discute d’abord de ces attentes avec mon **manager**, je regarde les possibilités d’aménagement, puis j’évalue s’il est préférable de rester ou de chercher un contexte plus adapté.",
       "Je me mets en retrait sans explication.",
       "Je menace de partir à chaque désaccord."
     ],
@@ -1544,7 +1544,7 @@
     "intitule": "Comment répondez-vous à la question: que faites-vous si vous réalisez que ce poste n’est pas fait pour vous après quelques mois ?",
     "reponses": [
       "Je reste sans rien dire.",
-      "J’en parle honnêtement avec mon manager, j’essaie de voir s’il y a des ajustements possibles, et si ce n’est pas le cas, je prépare une transition propre.",
+      "J’en parle honnêtement avec mon **manager**, j’essaie de voir s’il y a des ajustements possibles, et si ce n’est pas le cas, je prépare une transition propre.",
       "Je pars brutalement.",
       "Je fais le minimum en attendant mieux."
     ],
@@ -1555,7 +1555,7 @@
   },
   {
     "id": "hr_112",
-    "intitule": "Comment parler d’un conflit passé avec un manager sans vous décrédibiliser ?",
+    "intitule": "Comment parler d’un conflit passé avec un **manager** sans vous décrédibiliser ?",
     "reponses": [
       "Je dis que le manager était toxique et incompétent.",
       "Je décris brièvement le contexte, ce que j’ai essayé de faire pour améliorer la situation, et je reste centré sur ce que j’ai appris plutôt que sur le jugement de la personne.",
@@ -1597,11 +1597,11 @@
   },
   {
     "id": "hr_115",
-    "intitule": "On vous demande: acceptez-vous de travailler sur une techno qui ne vous intéresse pas, sur le long terme ?",
+    "intitule": "On vous demande: acceptez-vous de travailler sur une **techno** qui ne vous intéresse pas, sur le long terme ?",
     "reponses": [
       "Oui, même si ça ne m’intéresse pas du tout.",
       "Je peux m’engager sur une période si c’est utile à l’équipe, mais à long terme j’ai besoin d’échanger sur la direction de ma stack pour rester motivé.",
-      "Je refuse toute techno qui ne me plaît pas.",
+      "Je refuse toute **techno** qui ne me plaît pas.",
       "Je dis oui et je me désengage progressivement."
     ],
     "indexBonneReponse": 1,
@@ -1613,7 +1613,7 @@
     "id": "hr_116",
     "intitule": "Si on vous demande de mentir à un client sur l’état d’avancement d’un projet, que faites-vous ?",
     "reponses": [
-      "Je mens, c’est mon manager qui décide.",
+      "Je mens, c’est mon **manager** qui décide.",
       "Je refuse de mentir, je propose une formulation honnête mais rassurante, et j’explique pourquoi la transparence structurée est plus saine.",
       "Je mens puis je le dis au client plus tard.",
       "Je démissionne immédiatement sans explication."
@@ -1625,7 +1625,7 @@
   },
   {
     "id": "hr_117",
-    "intitule": "Comment gérez-vous votre image professionnelle en ligne (GitHub, LinkedIn, site perso) ?",
+    "intitule": "Comment gérez-vous votre image professionnelle en ligne (**GitHub**, **LinkedIn**, site perso) ?",
     "reponses": [
       "Je ne m’en occupe pas.",
       "Je m’efforce de garder ces espaces cohérents avec ce que je suis: des projets que j’assume, un discours honnête sur mon niveau et mes envies.",
@@ -1656,7 +1656,7 @@
     "intitule": "Si, dans 10 ans, vous n’êtes plus développeur, comment l’expliqueriez-vous à un recruteur aujourd’hui ?",
     "reponses": [
       "Je dirais que le dev n’était pas si intéressant.",
-      "Probablement parce que j’aurai évolué vers un rôle qui garde un lien avec la tech (architecture, produit, accompagnement), en capitalisant sur ce que j’aurai construit comme développeur.",
+      "Probablement parce que j’aurai évolué vers un rôle qui garde un lien avec la **tech** (architecture, produit, accompagnement), en capitalisant sur ce que j’aurai construit comme développeur.",
       "Parce que je me serai lassé très vite.",
       "Parce que je veux changer de domaine tous les deux ans."
     ],
