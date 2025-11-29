@@ -162,6 +162,9 @@ async function loadCategory(categoryFile: string) {
       console.log(`[Import] Categories in store: ${Array.from(categorySet).join(', ')}`)
 
       console.log(`[Import] Category ${categoryFile} loaded with ${questions.length} questions`)
+
+      // Show success message
+      categoryError.value = null
     } else {
       throw new Error(`No questions found in ${categoryFile}.json`)
     }
@@ -264,7 +267,12 @@ async function loadAllCategories() {
 
     const finalCategories = new Set(dataStore.questions.map((q) => q.categorie))
     console.log(`[Import] [AddAll] - Categories loaded: ${Array.from(finalCategories).join(', ')}`)
-    console.log(`[Import] [AddAll] ✓ IMPORT COMPLETE - Refresh Home to see categories`)
+    console.log(`[Import] [AddAll] ✓ IMPORT COMPLETE`)
+
+    // Auto-navigate to home after 1.5 seconds
+    setTimeout(() => {
+      router.push({ name: 'home' })
+    }, 1500)
   } finally {
     loadingAll.value = false
     currentLoadingCategory.value = null
