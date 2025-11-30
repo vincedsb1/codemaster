@@ -30,7 +30,9 @@ const difficultyBadgeClass = computed(() => {
 
 // Render Markdown
 function renderMarkdown(text: string): string {
-  return marked.parseInline(text || '') as string
+  // Replace last space with non-breaking space to prevent orphans
+  const safeText = (text || '').replace(/\s([^\s]*)$/, '&nbsp;$1')
+  return marked.parseInline(safeText) as string
 }
 
 // Actions
