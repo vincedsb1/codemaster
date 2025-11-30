@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDataStore } from '@/stores/useDataStore'
 import { useQuizStore } from '@/stores/useQuizStore'
@@ -10,10 +10,25 @@ const quizStore = useQuizStore()
 
 const categoriesDisponibles = computed(() => {
   const questionsCategories = new Set(dataStore.questions.map((q) => q.categorie))
-  return dataStore.allCategories.filter((cat) => questionsCategories.has(cat.id))
+  // Match by label since questions store category label, or by id if mismatch
+  return dataStore.allCategories.filter((cat) =>
+    questionsCategories.has(cat.label) || questionsCategories.has(cat.id)
+  )
 })
 
 const canValidate = computed(() => quizStore.randomCategoriesSelection.length > 0)
+
+// Auto-select all categories when available if empty
+watch(
+  categoriesDisponibles,
+  (cats) => {
+    if (cats.length > 0 && quizStore.randomCategoriesSelection.length === 0) {
+      console.log('[RandomConfig] Auto-selecting categories:', cats.map(c => c.label))
+      quizStore.randomCategoriesSelection = cats.map((c) => c.label)
+    }
+  },
+  { immediate: true }
+)
 
 const colorMap: Record<string, { bg: string; text: string }> = {
   slate: { bg: 'bg-slate-100', text: 'text-slate-600' },
@@ -35,6 +50,35 @@ const colorMap: Record<string, { bg: string; text: string }> = {
 function getColorClasses(color: string | undefined): { bg: string; text: string } {
   // @ts-ignore - conditional logic ensures return type is always valid
   return (color && (color in colorMap) ? colorMap[color as keyof typeof colorMap] : null) || colorMap.indigo
+}
+
+function getIconClass(icon: string): string {
+  // Map known icons or normalize
+  const map: Record<string, string> = {
+    'Code': 'ph-code',
+    'Rocket': 'ph-rocket',
+    'Cpu': 'ph-cpu',
+    'Palette': 'ph-palette',
+    'Chat': 'ph-chat-circle',
+    'Lightning': 'ph-lightning',
+    'Server': 'ph-hard-drives' // Node.js icon fallback
+  }
+  
+  if (map[icon]) return map[icon]
+  
+  // Fallback: ensure it starts with ph- and is lowercase
+  if (icon.startsWith('ph-')) return icon.toLowerCase()
+  return `ph-${icon.toLowerCase()}`
+}
+
+function toggleCategory(label: string) {
+  console.log('[RandomConfig] Toggle:', label)
+  const index = quizStore.randomCategoriesSelection.indexOf(label)
+  if (index === -1) {
+    quizStore.randomCategoriesSelection.push(label)
+  } else {
+    quizStore.randomCategoriesSelection.splice(index, 1)
+  }
 }
 
 function validateRandomSelection() {
@@ -63,29 +107,23 @@ function goBack() {
 
     <!-- Main Content -->
     <main class="flex-grow px-6 py-8 pb-12 max-w-2xl mx-auto w-full flex flex-col">
-      <div class="text-center space-y-1 mb-8">
-        <h2 class="text-2xl font-bold text-slate-900">Sélection aléatoire</h2>
-        <p class="text-[15px] text-slate-500">Choisis tes catégories préférées</p>
-      </div>
+
 
       <!-- Checkboxes Grid -->
-      <div class="flex-1 grid grid-cols-2 gap-3">
-        <label v-for="cat in categoriesDisponibles"
+      <div class="flex-1 grid grid-cols-2 gap-3 pt-2">
+        <div v-for="cat in categoriesDisponibles"
                :key="cat.id"
-               class="flex items-center gap-3 p-4 bg-white rounded-[18px] border border-gray-100/50 shadow-[0_2px_8px_rgba(0,0,0,0.04)] cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all"
+               @click="toggleCategory(cat.label)"
+               class="flex items-center gap-3 p-4 rounded-[18px] border shadow-[0_2px_8px_rgba(0,0,0,0.04)] cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all select-none"
                :class="quizStore.randomCategoriesSelection.includes(cat.label)
-                 ? 'border-blue-300 bg-blue-50/30'
-                 : ''">
-          <input type="checkbox"
-                 :value="cat.label"
-                 v-model="quizStore.randomCategoriesSelection"
-                 class="sr-only" />
+                 ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                 : 'bg-white border-gray-100/50'">
           <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                :class="getColorClasses(cat.color).bg">
-            <i :class="['ph', cat.icon, 'text-sm', getColorClasses(cat.color).text]"></i>
+            <i :class="['ph-fill', getIconClass(cat.icon), 'text-lg', getColorClasses(cat.color).text]"></i>
           </div>
-          <span class="font-medium text-sm line-clamp-1">{{ cat.label }}</span>
-        </label>
+          <span class="font-medium text-sm line-clamp-1 select-none">{{ cat.label }}</span>
+        </div>
       </div>
 
       <!-- Validate Button -->
