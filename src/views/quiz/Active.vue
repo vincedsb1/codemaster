@@ -34,8 +34,14 @@ function renderMarkdown(text: string): string {
 }
 
 // Actions
-function handleAnswer(answerIndex: number) {
+function handleAnswer(answerIndex: number, event?: MouseEvent) {
+  // If answered, let the event bubble to handleGlobalClick (which triggers next)
   if (hasAnswered.value) return
+  
+  // If not answered, stop propagation to prevent triggering next immediately
+  if (event) {
+    event.stopPropagation()
+  }
   
   haptics.light()
   quizStore.submitAnswer(answerIndex)
@@ -80,16 +86,11 @@ function handleGlobalClick(event: MouseEvent) {
   // If not answered, do nothing
   if (!hasAnswered.value) return
 
-  // Check if the target is interactive (button, link, etc.) to avoid conflict
-  // We want to ignore clicks on ACTIVE buttons/links.
-  // Disabled buttons (like answer options after selection) should NOT count as interactive
-  // so clicks on them will trigger handleNext.
+  // Check if the target is a link (e.g. in markdown explanation)
   const target = event.target as HTMLElement
-  const isInteractive = target.closest('button:not(:disabled), a, [role="button"]')
+  if (target.closest('a')) return
   
-  if (!isInteractive) {
-    handleNext()
-  }
+  handleNext()
 }
 </script>
 
@@ -148,10 +149,13 @@ function handleGlobalClick(event: MouseEvent) {
           <div class="space-y-3">
             <button v-for="(answer, index) in currentQuestion.reponses"
                     :key="index"
-                    @click.stop="handleAnswer(index)"
-                    :disabled="hasAnswered"
-                    class="group w-full rounded-[24px] p-4 border transition-all duration-200 flex items-start gap-4 text-left relative overflow-hidden disabled:cursor-not-allowed"
-                    :class="getAnswerClasses(index, selectedAnswerIndex, currentQuestion.indexBonneReponse, hasAnswered)">
+                    @click="handleAnswer(index, $event)"
+                    :disabled="false"
+                    class="group w-full rounded-[24px] p-4 border transition-all duration-200 flex items-start gap-4 text-left relative overflow-hidden cursor-pointer"
+                    :class="[
+                      getAnswerClasses(index, selectedAnswerIndex, currentQuestion.indexBonneReponse, hasAnswered),
+                      hasAnswered ? 'cursor-pointer' : ''
+                    ]">
 
               <!-- Letter Badge -->
               <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-200"

@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useQuizStore } from '@/stores/useQuizStore'
 import { useStatsStore } from '@/stores/useStatsStore'
 import { AppRoutes } from '@/router/routes'
-import { calculateLevel } from '@/logic/gamification'
+import { calculateLevel, xpForNextLevel } from '@/logic/gamification'
 
 const router = useRouter()
 const quizStore = useQuizStore()
@@ -14,6 +14,10 @@ const displayScore = ref(0)
 // XP Animation State
 const displayXp = ref(0)
 const displayBonusXp = ref(0)
+const currentDisplayedLevel = ref(1)
+const currentBarProgress = ref(0) // 0 to 100
+const isLevelUp = ref(false)
+const levelsGained = ref(0)
 
 // Computed values
 const session = computed(() => quizStore.activeSession)
@@ -29,10 +33,10 @@ const currentStreak = computed(() => unref(statsStore.globalStats)?.streakActuel
 // XP Calculations
 const totalXp = computed(() => statsStore.globalStats.xp || 0)
 const xpGain = computed(() => statsStore.xpGainedLastSession || 0)
-const previousXp = computed(() => Math.max(0, totalXp.value - xpGain.value))
+const previousTotalXp = computed(() => Math.max(0, totalXp.value - xpGain.value))
 const isDailyChallenge = computed(() => session.value?.isDailyChallenge || false)
 
-// Split XP for animation
+// Split XP for animation display numbers only
 const baseXpGain = computed(() => {
   const gain = xpGain.value || 0
   return isDailyChallenge.value ? Math.floor(gain / 2) : gain
@@ -44,9 +48,8 @@ const bonusXpGain = computed(() => {
 })
 
 // Level Calculations
-const currentLevel = computed(() => calculateLevel(totalXp.value))
-const previousLevel = computed(() => calculateLevel(previousXp.value))
-const isLevelUp = computed(() => currentLevel.value > previousLevel.value)
+const targetLevel = computed(() => calculateLevel(totalXp.value))
+const startLevel = computed(() => calculateLevel(previousTotalXp.value))
 
 // Score vs Moyenne
 const isAboveAverage = computed(() => score.value > averageScore.value)
@@ -118,6 +121,17 @@ const shouldShowConfetti = computed(() => isAboveAverage.value)
 onMounted(async () => {
   await statsStore.loadStats()
 
+  // Initialize Display Values
+  currentDisplayedLevel.value = startLevel.value
+  
+  // Calculate initial progress within the start level
+  const startLevelXpReq = xpForNextLevel(startLevel.value - 1) // Floor XP for current level
+  const nextLevelXpReq = xpForNextLevel(startLevel.value)      // Ceiling XP for current level
+  const range = nextLevelXpReq - startLevelXpReq
+  const progressInLevel = previousTotalXp.value - startLevelXpReq
+  
+  currentBarProgress.value = (progressInLevel / (range > 0 ? range : 1)) * 100
+
   // Animate score counter
   const startScore = 0
   const targetScore = score.value
@@ -138,32 +152,9 @@ onMounted(async () => {
 
   animate()
 
-  // Animate XP
+  // Animate XP and Level Up
   setTimeout(() => {
-    const xpDuration = 1500
-    const xpStartTime = Date.now()
-    
-    const animateXp = () => {
-      const elapsed = Date.now() - xpStartTime
-      const progress = Math.min(elapsed / xpDuration, 1)
-      
-      // Ease out cubic
-      const ease = 1 - Math.pow(1 - progress, 3)
-      
-      displayXp.value = Math.round((baseXpGain.value || 0) * ease)
-      
-      if (isDailyChallenge.value) {
-        // Bonus XP starts animating halfway through
-        const bonusProgress = Math.max(0, (progress - 0.5) * 2)
-        const bonusEase = 1 - Math.pow(1 - bonusProgress, 3)
-        displayBonusXp.value = Math.round((bonusXpGain.value || 0) * bonusEase)
-      }
-      
-      if (progress < 1) {
-        requestAnimationFrame(animateXp)
-      }
-    }
-    requestAnimationFrame(animateXp)
+    animateXpSequence()
   }, 500)
 
   // Déclencher confetti après 500ms
@@ -171,6 +162,72 @@ onMounted(async () => {
     createConfetti()
   }, 500)
 })
+
+function getXpRangeForLevel(level: number) {
+  const start = xpForNextLevel(level - 1)
+  const end = xpForNextLevel(level)
+  return { start, end, range: end - start }
+}
+
+function animateXpSequence() {
+  const xpGainValue = xpGain.value || 0
+  let currentXpAccumulator = previousTotalXp.value
+  const finalXp = totalXp.value
+  
+  let currentAnimLevel = startLevel.value
+  
+  // Animation loop function
+  const step = () => {
+    // Calculate target XP for this frame? No, better to interpolate.
+    // Let's do a time-based interpolation of the XP value from previousTotal to totalXp
+    // And update the level/bar based on that interpolated value.
+    
+    const duration = 2000 // 2 seconds total animation
+    const startTime = Date.now()
+    
+    const frame = () => {
+      const now = Date.now()
+      const progress = Math.min((now - startTime) / duration, 1)
+      const ease = 1 - Math.pow(1 - progress, 3) // Cubic ease out
+      
+      const currentInterpolatedXp = Math.floor(previousTotalXp.value + (xpGainValue * ease))
+      
+      // Update display numbers for gain
+      displayXp.value = Math.round((baseXpGain.value || 0) * ease)
+      if (isDailyChallenge.value) {
+        const bonusEase = Math.max(0, (ease - 0.5) * 2) // Bonus animates later
+        displayBonusXp.value = Math.round((bonusXpGain.value || 0) * bonusEase)
+      } else {
+        displayXp.value = Math.round(xpGainValue * ease)
+      }
+
+      // Update Level and Bar
+      const calculatedLevel = calculateLevel(currentInterpolatedXp)
+      
+      if (calculatedLevel > currentAnimLevel) {
+        // Level Up Event!
+        currentAnimLevel = calculatedLevel
+        isLevelUp.value = true
+        levelsGained.value = currentAnimLevel - startLevel.value
+      }
+      
+      currentDisplayedLevel.value = currentAnimLevel
+      
+      const { start, range } = getXpRangeForLevel(currentAnimLevel)
+      const progressInLevel = currentInterpolatedXp - start
+      const percentage = (progressInLevel / (range > 0 ? range : 1)) * 100
+      
+      currentBarProgress.value = Math.min(100, Math.max(0, percentage))
+      
+      if (progress < 1) {
+        requestAnimationFrame(frame)
+      }
+    }
+    requestAnimationFrame(frame)
+  }
+  
+  step()
+}
 
 // Methods
 function createConfetti() {
@@ -252,18 +309,28 @@ async function replayQuiz() {
           </div>
         </div>
 
+        <!-- Level Info -->
+        <div class="flex justify-between items-end mb-1 px-1">
+          <div class="text-sm font-bold text-slate-700">
+            Niveau <span class="text-indigo-600 text-lg">{{ currentDisplayedLevel }}</span>
+          </div>
+          <div class="text-xs font-medium text-slate-400">
+            {{ Math.round(currentBarProgress) }}%
+          </div>
+        </div>
+
         <!-- Progress Bar Container -->
         <div class="relative h-4 bg-slate-100 rounded-full overflow-hidden">
-          <!-- Base XP Bar -->
-          <div class="absolute top-0 left-0 h-full bg-indigo-500 transition-all duration-300 ease-out"
-               :style="{ width: `${(baseXpGain + bonusXpGain) > 0 ? (displayXp / (baseXpGain + bonusXpGain)) * 100 : 0}%` }"></div>
+          <!-- Main XP Bar -->
+          <div class="absolute top-0 left-0 h-full bg-indigo-500 transition-none"
+               :style="{ width: `${currentBarProgress}%` }"></div>
           
-          <!-- Bonus XP Bar (Stacked) -->
-          <div v-if="isDailyChallenge" 
-               class="absolute top-0 h-full bg-orange-400 transition-all duration-300 ease-out"
+          <!-- Bonus XP Indicator (Overlay if daily challenge) -->
+          <div v-if="isDailyChallenge && displayBonusXp > 0" 
+               class="absolute top-0 h-full bg-orange-400 opacity-80 transition-none"
                :style="{ 
-                 left: `${(baseXpGain + bonusXpGain) > 0 ? (displayXp / (baseXpGain + bonusXpGain)) * 100 : 0}%`,
-                 width: `${(baseXpGain + bonusXpGain) > 0 ? (displayBonusXp / (baseXpGain + bonusXpGain)) * 100 : 0}%` 
+                 left: `${Math.max(0, currentBarProgress - (displayBonusXp / (baseXpGain + bonusXpGain) * currentBarProgress))}%`,
+                 width: `${(displayBonusXp / (baseXpGain + bonusXpGain)) * currentBarProgress}%` 
                }"></div>
         </div>
 
@@ -273,7 +340,8 @@ async function replayQuiz() {
         </div>
 
         <div v-if="isLevelUp" class="mt-3 text-center p-2 bg-indigo-50 rounded-xl border border-indigo-100 animate-bounce-short">
-          <span class="font-bold text-indigo-700">Niveau Supérieur ! {{ previousLevel }} ➔ {{ currentLevel }}</span>
+          <span class="font-bold text-indigo-700 text-lg">Niveau Supérieur ! 🆙</span>
+          <p class="text-xs text-indigo-500 font-medium">Continuez comme ça !</p>
         </div>
       </section>
 

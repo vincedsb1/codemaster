@@ -12,6 +12,7 @@
 ### 1.1 Problème métier adressé
 
 CodeMaster est une application web permettant aux utilisateurs de :
+
 - **S'entraîner** via des quiz sur des sujets techniques (TypeScript, React, Next.js, Node.js, CSS, JavaScript, Entretiens)
 - **Progresser** en suivant leurs statistiques sur 30 jours
 - **Débloquer des badges** pour récompenser les jalons d'apprentissage
@@ -21,6 +22,7 @@ CodeMaster est une application web permettant aux utilisateurs de :
 ### 1.2 Type d'utilisateurs
 
 **Utilisateur final / Apprenant**
+
 - Accès unique, pas de système d'authentification
 - Toutes les données sont locales (IndexedDB) et non synchronisées
 - Une session par appareil / navigateur
@@ -64,23 +66,24 @@ CodeMaster est une application web permettant aux utilisateurs de :
 
 ### 2.1 Technologies côté frontend
 
-| Aspect | Technologie | Version |
-|--------|-------------|---------|
-| Framework | Vue.js | 3.5.22 |
-| Language | TypeScript | 5.9 |
-| Build | Vite | 7.1.11 |
-| State Management | Pinia | 3.0.3 |
-| Routing | Vue Router | 4.6.3 |
-| Styling | Tailwind CSS | v4 (via @tailwindcss/postcss) |
-| Icons | Phosphor Icons | (CDN unpkg) |
-| Charts | Chart.js | 4.5.1 |
-| Markdown | marked | 17.0.1 |
+| Aspect           | Technologie    | Version                       |
+| ---------------- | -------------- | ----------------------------- |
+| Framework        | Vue.js         | 3.5.22                        |
+| Language         | TypeScript     | 5.9                           |
+| Build            | Vite           | 7.1.11                        |
+| State Management | Pinia          | 3.0.3                         |
+| Routing          | Vue Router     | 4.6.3                         |
+| Styling          | Tailwind CSS   | v4 (via @tailwindcss/postcss) |
+| Icons            | Phosphor Icons | (CDN unpkg)                   |
+| Charts           | Chart.js       | 4.5.1                         |
+| Markdown         | marked         | 17.0.1                        |
 
 ### 2.2 Architecture générale
 
 **Pattern:** Monolithique frontend-only (aucun serveur backend)
 
 **Structure des dossiers:**
+
 ```
 src/
 ├── main.ts                    # Point d'entrée Vue + Pinia + Router
@@ -140,14 +143,15 @@ src/
 
 **Stores (Object Stores) et indices:**
 
-| Store | Key Path | Indices | Rôle |
-|-------|----------|---------|------|
-| `questions` | `id` | `countApparition` (non-unique) | Questions et métadonnées |
-| `sessions` | `sessionId` | `dateFin` (non-unique) | Historique des quiz |
-| `meta` | `id` | aucun | Badges, métadonnées globales |
-| `categories` | `id` | `label` (unique) | Catégories de questions |
+| Store        | Key Path    | Indices                        | Rôle                         |
+| ------------ | ----------- | ------------------------------ | ---------------------------- |
+| `questions`  | `id`        | `countApparition` (non-unique) | Questions et métadonnées     |
+| `sessions`   | `sessionId` | `dateFin` (non-unique)         | Historique des quiz          |
+| `meta`       | `id`        | aucun                          | Badges, métadonnées globales |
+| `categories` | `id`        | `label` (unique)               | Catégories de questions      |
 
 **Schéma relationnel:**
+
 - Une `Question` appartient à une `Category` (via `categorie: string` = category ID)
 - Une `QuizSession` contient plusieurs `SessionQuestion` (questions modifiées pour le quiz)
 - Un `Badge` est indépendant, lié aux `QuizSession` via logique métier
@@ -167,6 +171,7 @@ src/
 **Internationalisation:** Aucune (application en français)
 
 **Tests:**
+
 - Unitaires: Vitest 3.2.4 + @vue/test-utils 2.4.6
 - E2E: Playwright 1.56.1
 
@@ -206,22 +211,26 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Afficher la liste des catégories disposant de questions
 2. Permettre la sélection d'une catégorie → parcours `Difficulté → Nombre de questions → Quiz`
 3. Ouvrir le mode aléatoire (multi-catégories) → parcours `RandomConfig → Difficulté → Nombre de questions → Quiz`
 4. Naviguer vers l'import de données si aucune catégorie disponible
 
 **Données affichées:**
+
 - Grille de catégories (labels, icônes colorées)
 - Bouton "Mode Aléatoire"
 - Alerte si aucune catégorie disponible
 - Lien d'accès à l'import de données
 
 **API / Stores:**
+
 - `useDataStore`: `questions`, `allCategories`, `reloadQuestions()`
 - `useQuizStore`: `selectCategory()`, `openRandomConfig()`
 
 **Navigation sortante:**
+
 - `selectCategory(label)` → `/quiz/difficulty`
 - `openRandomConfig()` → `/quiz/randomconfig`
 - `goToImport()` → `/settings/import`
@@ -237,18 +246,22 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Afficher 4 boutons (Facile, Moyen, Difficile, Aléatoire)
 2. Enregistrer la sélection dans le store
 3. Naviguer vers la sélection du nombre de questions
 
 **Données affichées:**
+
 - Boutons avec labels de difficulté
 - Description des points accordés par niveau
 
 **API / Stores:**
+
 - `useQuizStore`: `selectDifficulty(difficulty)`
 
 **Navigation sortante:**
+
 - Après sélection → `/quiz/count`
 
 ---
@@ -262,6 +275,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Afficher 3 options (5, 10, 20 questions)
 2. Créer une session de quiz avec :
    - Catégories sélectionnées (Home ou RandomConfig)
@@ -270,12 +284,15 @@ Redirection: `/` → `/home`
 3. Naviguer vers le quiz actif
 
 **Données affichées:**
+
 - 3 boutons de sélection (5/10/20)
 
 **API / Stores:**
+
 - `useQuizStore`: `createQuizSession(categories, difficulty, count)`
 
 **Navigation sortante:**
+
 - Après création → `/quiz/active`
 
 ---
@@ -289,6 +306,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Afficher toutes les catégories avec questions
 2. Multi-sélection de catégories (checkboxes)
 3. Valider la sélection (minimum 1 catégorie)
@@ -296,17 +314,21 @@ Redirection: `/` → `/home`
 5. Naviguer vers le choix de difficulté
 
 **Données affichées:**
+
 - Liste de catégories sélectionnables
 - Nombre de questions par catégorie (optionnel)
 
 **API / Stores:**
+
 - `useDataStore`: `allCategories`, `questions`
 - `useQuizStore`: `randomCategoriesSelection`, `validateRandomSelection()`
 
 **Validation:**
+
 - Au moins 1 catégorie doit être sélectionnée
 
 **Navigation sortante:**
+
 - Après validation → `/quiz/difficulty`
 
 ---
@@ -320,6 +342,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous (si session active)
 
 **Actions principales:**
+
 1. Afficher la question courante avec :
    - Énoncé (peut contenir du Markdown)
    - Catégorie et difficulté de la question
@@ -332,6 +355,7 @@ Redirection: `/` → `/home`
 4. Progresser vers la question suivante ou terminer le quiz
 
 **Données affichées:**
+
 - Barre de progression (%)
 - Numéro question / total
 - Texte de la question
@@ -340,18 +364,21 @@ Redirection: `/` → `/home`
 - Explication (après réponse)
 
 **API / Stores:**
+
 - `useQuizStore`:
   - `activeSession`, `currentQuestion`, `selectedAnswerIndex`, `hasAnswered`
   - `submitAnswer(index)`, `skipQuestion()`, `nextQuestion()`
   - `progressPercent`, `isLastQuestion`, `isQuizFinished`
 
 **Comportements métier:**
+
 - Les réponses sont mélangées aléatoirement à chaque question (`ordreReponses`)
 - Les réponses correctes incrémentent `countBonneReponse` de la question originale
 - Les apparitions incrémentent `countApparition`
 - Si la dernière question → appeler `finishQuiz()`
 
 **Navigation sortante:**
+
 - Après quiz terminé → `/quiz/summary`
 
 ---
@@ -365,6 +392,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous (après avoir terminé un quiz)
 
 **Actions principales:**
+
 1. Afficher le score obtenu (%)
 2. Afficher le nombre de bonnes réponses
 3. Comparer avec la moyenne globale
@@ -375,6 +403,7 @@ Redirection: `/` → `/home`
    - Refaire le même quiz (replay)
 
 **Données affichées:**
+
 - Score en cercle de progression (0-100%)
 - Bonnes réponses / total
 - Moyenne globale et comparaison
@@ -383,15 +412,18 @@ Redirection: `/` → `/home`
 - Message personnalisé selon performance
 
 **API / Stores:**
+
 - `useQuizStore`: `activeSession`, `getReplayParams()`
 - `useStatsStore`: `globalStats`, `newlyUnlockedBadges`, `loadStats()`
 
 **Calculs métier:**
+
 - Score en % = (correct answers / total questions) × 100
 - Score pondéré = somme des points selon difficulté des bonnes réponses
 - Comparaison à la moyenne globale
 
 **Navigation sortante:**
+
 - `goHome()` → `/home`
 - `replayQuiz()` → `/quiz/count` avec paramètres précédents
 
@@ -406,6 +438,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Afficher 4 KPI cards :
    - Moyenne globale (%)
    - Meilleur score (%)
@@ -416,24 +449,28 @@ Redirection: `/` → `/home`
 4. Afficher détails badge au clic (modal)
 
 **Données affichées:**
+
 - 4 cartes de statistiques
 - Graphique Chart.js (30 jours)
 - Grille 3 colonnes de badges
 - Détails badge au hover/clic
 
 **API / Stores:**
+
 - `useStatsStore`:
   - `globalStats` (moyenne, meilleur score, streak, sessions)
   - `calculateDailyAverages(sessions)` pour le graphique
 - `useDataStore`: `badges`
 
 **Calculs métier:**
+
 - Moyenne globale = moyenne de tous les scores en %
 - Meilleur score = max des scores
 - Streak = jours consécutifs avec au moins 1 quiz
 - Historique 30 jours = groupé par date
 
 **Navigation sortante:**
+
 - Aucune (page de consultation)
 
 ---
@@ -447,6 +484,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Afficher liste des catégories pré-chargées avec statut :
    - "Non chargé", "En cours", "Chargé", "Erreur"
 2. Charger catégories individuelles (via fichiers JSON internes)
@@ -457,23 +495,27 @@ Redirection: `/` → `/home`
 7. Annuler opération en cours
 
 **Données affichées:**
+
 - Tableau / liste des catégories avec statut de chargement
 - Barre de progression (par catégorie et globale)
 - Boutons d'action
 - Zone de danger (reset stats)
 
 **API / Stores:**
+
 - `useDataStore`: `importQuestions()`, `reloadQuestions()`
 - `useStatsStore`: pour reset stats
 - `sessionRepository`, `questionRepository` pour réinitialisation
 
 **Comportements métier:**
+
 - Les fichiers JSON doivent être dans `questions/` du repo (pré-chargés)
 - Format JSON attendu : array de { intitule, reponses[], indexBonneReponse, difficulte, explication?, categorie? }
 - Upload personnalisé stocke en `sessionStorage` puis bascule vers `SelectCategory`
 - Reset stats réinitialise les sessions mais garde les questions
 
 **Navigation sortante:**
+
 - Upload → `/settings/select-category` (via sessionStorage)
 
 ---
@@ -487,6 +529,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous (après upload)
 
 **Actions principales:**
+
 1. Afficher catégories existantes (sélection)
 2. Formulaire pour créer nouvelle catégorie :
    - Label (texte, validation d'unicité)
@@ -496,23 +539,27 @@ Redirection: `/` → `/home`
 4. Annuler (retour)
 
 **Données affichées:**
+
 - Liste des catégories existantes (boutons radio)
 - Formulaire de création catégorie
 - Sélection icône (grid 24 icônes)
 - Sélection couleur (grid 14 couleurs)
 
 **API / Stores:**
+
 - `useDataStore`:
   - `allCategories`, `getCategoryByLabel()`
   - `addCategory()`, `importQuestions(category, json)`
 - `sessionStorage` pour récupérer le JSON upload
 
 **Validation:**
+
 - Label requis et unique
 - Icône requise
 - Couleur requise
 
 **Navigation sortante:**
+
 - Après succès → `/home` (après 2s)
 - Annuler → `router.back()`
 
@@ -527,23 +574,27 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Afficher liste de toutes les catégories avec nombre de questions
 2. Créer nouvelle catégorie (FAB → CategoryEdit)
 3. Éditer catégorie existante (clic → CategoryEdit)
 4. Supprimer catégorie (avec confirmation) + cascader suppression questions
 
 **Données affichées:**
+
 - Tableau / liste des catégories
 - Nombre de questions par catégorie
 - Bouton FAB création
 - Menu/boutons édition/suppression
 
 **API / Stores:**
+
 - `useDataStore`:
   - `allCategories`, `questions`
   - `deleteCategory(id)` (cascading)
 
 **Navigation sortante:**
+
 - Créer → `/settings/categories/edit` (sans params)
 - Éditer → `/settings/categories/edit?id=<categoryId>`
 - Après action → reste sur même page
@@ -559,6 +610,7 @@ Redirection: `/` → `/home`
 **Utilisateurs autorisés:** Tous
 
 **Actions principales:**
+
 1. Détecter mode (création vs édition) via route query param `id`
 2. En mode édition : pré-remplir le formulaire
 3. Afficher formulaire :
@@ -570,25 +622,30 @@ Redirection: `/` → `/home`
 6. Annuler → retour à la liste
 
 **Données affichées:**
+
 - Formulaire avec 3 champs
 - Grids de sélection (icônes, couleurs)
 - Boutons Save/Cancel
 
 **API / Stores:**
+
 - `useDataStore`:
   - `allCategories`
   - `addCategory()`, `updateCategory()`
   - Logique de cascade pour label changement
 
 **Validation:**
+
 - Label requis, unique (sauf si édition de la même catégorie)
 - Icône requise
 - Couleur requise
 
 **Erreurs métier:**
+
 - Doublon de label → message d'erreur
 
 **Navigation sortante:**
+
 - Après succès → `/settings/categories`
 - Annuler → `/settings/categories`
 
@@ -599,11 +656,12 @@ Redirection: `/` → `/home`
 ### 4.1 Entités TypeScript
 
 #### **Category**
+
 ```typescript
 interface Category {
-  id: string           // Unique ID (ex: 'cat_typescript')
-  label: string        // Nom affiché (ex: 'TypeScript')
-  icon: string         // Nom icône Phosphor (ex: 'Code')
+  id: string // Unique ID (ex: 'cat_typescript')
+  label: string // Nom affiché (ex: 'TypeScript')
+  icon: string // Nom icône Phosphor (ex: 'Code')
   color: TailwindColor // Couleur Tailwind (ex: 'blue')
 }
 ```
@@ -611,6 +669,7 @@ interface Category {
 **Rôle:** Organiseur de questions. Les catégories peuvent être modifiées et supprimées. Chaque question apartient à une catégorie.
 
 **7 catégories pré-définies:**
+
 - TypeScript (blue)
 - React (cyan)
 - Next.js (slate)
@@ -622,28 +681,31 @@ interface Category {
 ---
 
 #### **Question**
+
 ```typescript
 interface Question {
-  id: string                    // Unique ID (ex: 'q-1', 'imported-123-0')
-  intitule: string              // Énoncé (peut avoir du Markdown)
-  reponses: string[]            // [answer0, answer1, answer2, answer3]
-  indexBonneReponse: number     // Index de la bonne réponse (0-3)
-  explication: string           // Texte d'explication (Markdown)
-  categorie: string             // ID de la catégorie
+  id: string // Unique ID (ex: 'q-1', 'imported-123-0')
+  intitule: string // Énoncé (peut avoir du Markdown)
+  reponses: string[] // [answer0, answer1, answer2, answer3]
+  indexBonneReponse: number // Index de la bonne réponse (0-3)
+  explication: string // Texte d'explication (Markdown)
+  categorie: string // ID de la catégorie
   difficulte: 'facile' | 'moyen' | 'difficile'
-  countApparition: number       // Nombre de fois affichée
-  countBonneReponse: number     // Nombre de fois correctement répondue
+  countApparition: number // Nombre de fois affichée
+  countBonneReponse: number // Nombre de fois correctement répondue
 }
 ```
 
 **Rôle:** Donnée brute d'une question de quiz. Immuable après ajout au système (sauf métadonnées de comptage).
 
 **Points par difficulté:**
+
 - Facile (1 point)
 - Moyen (2 points)
 - Difficile (3 points)
 
 **Importation:**
+
 - Via JSON array (propriétés requises: intitule, reponses, indexBonneReponse, difficulte)
 - Propriétés optionnelles: id, explication, categorie
 - Validation au import avec messages d'erreur clairs
@@ -651,11 +713,12 @@ interface Question {
 ---
 
 #### **SessionQuestion**
+
 ```typescript
 interface SessionQuestion extends Question {
-  ordreReponses: number[]   // [0, 2, 3, 1] - réponses mélangées
-  estSkippe: boolean        // true si l'utilisateur a passé
-  estCorrecte: boolean|null // true/false après réponse, null avant
+  ordreReponses: number[] // [0, 2, 3, 1] - réponses mélangées
+  estSkippe: boolean // true si l'utilisateur a passé
+  estCorrecte: boolean | null // true/false après réponse, null avant
 }
 ```
 
@@ -664,26 +727,28 @@ interface SessionQuestion extends Question {
 ---
 
 #### **QuizSession**
+
 ```typescript
 interface QuizSession {
-  sessionId: string            // UUID unique
-  dateDebut: string            // ISO string
-  dateFin: string | null       // ISO string (null si en cours)
+  sessionId: string // UUID unique
+  dateDebut: string // ISO string
+  dateFin: string | null // ISO string (null si en cours)
   questions: SessionQuestion[] // Array des questions
   indexQuestionCourante: number
   nbQuestions: number
-  scorePondere: number         // Somme des points
-  scorePondereMax: number      // Max possible
-  notePourcentage: number      // 0-100
+  scorePondere: number // Somme des points
+  scorePondereMax: number // Max possible
+  notePourcentage: number // 0-100
   difficulteChoisie: Difficulty
-  categories: string[]         // Labels des catégories
-  dateJour?: string            // Format YYYY-MM-DD pour stats
+  categories: string[] // Labels des catégories
+  dateJour?: string // Format YYYY-MM-DD pour stats
 }
 ```
 
 **Rôle:** Session de quiz, persistée en IndexedDB. Peut être en cours ou complétée.
 
 **Cycle de vie:**
+
 - Création (dateFin = null)
 - Progression (nextQuestion())
 - Terminaison (finishQuiz() → dateFin défini, scores calculés)
@@ -692,14 +757,15 @@ interface QuizSession {
 ---
 
 #### **Badge**
+
 ```typescript
 interface Badge {
-  id: string                 // Unique ID (ex: 'first_quiz', 'perfect_score')
-  nom: string                // Nom (ex: 'Premier Pas')
-  description: string        // Description du but
+  id: string // Unique ID (ex: 'first_quiz', 'perfect_score')
+  nom: string // Nom (ex: 'Premier Pas')
+  description: string // Description du but
   statut: 'verrouille' | 'debloque'
-  icon?: string              // Emoji (ex: '🐣')
-  dateDebloque?: string|null // ISO string du déblocage
+  icon?: string // Emoji (ex: '🐣')
+  dateDebloque?: string | null // ISO string du déblocage
 }
 ```
 
@@ -707,26 +773,27 @@ interface Badge {
 
 **6 badges pré-définis:**
 
-| ID | Nom | Description | Condition |
-|----|-----|-------------|-----------|
-| first_quiz | Premier Pas | Terminer un premier quiz | Complétée ≥ 1 session |
-| perfect_score | Perfection | Obtenir 100% à un quiz | Score = 100% sur une session |
-| streak_3 | Habitué | 3 jours de suite | Streak ≥ 3 jours |
-| streak_7 | Accro | 7 jours de suite | Streak ≥ 7 jours |
-| marathon | Marathonien | Faire 20 quiz au total | Total complétées ≥ 20 |
-| math_expert | Boss des Maths | 5 quiz de Maths terminés | 5 sessions monocatégorie 'Maths' |
+| ID            | Nom            | Description              | Condition                        |
+| ------------- | -------------- | ------------------------ | -------------------------------- |
+| first_quiz    | Premier Pas    | Terminer un premier quiz | Complétée ≥ 1 session            |
+| perfect_score | Perfection     | Obtenir 100% à un quiz   | Score = 100% sur une session     |
+| streak_3      | Habitué        | 3 jours de suite         | Streak ≥ 3 jours                 |
+| streak_7      | Accro          | 7 jours de suite         | Streak ≥ 7 jours                 |
+| marathon      | Marathonien    | Faire 20 quiz au total   | Total complétées ≥ 20            |
+| math_expert   | Boss des Maths | 5 quiz de Maths terminés | 5 sessions monocatégorie 'Maths' |
 
 **Règle métier:** Un badge verrouillé devient débloqué après qu'une condition soit remplie. Permanent (ne peut pas se re-verrouiller).
 
 ---
 
 #### **GlobalStats**
+
 ```typescript
 interface GlobalStats {
-  moyenneGlobale: number       // Moyenne des scores (%)
-  meilleurScore: number        // Max score (%)
-  streakActuel: number         // Jours consécutifs
-  totalSessions: number        // Sessions complétées
+  moyenneGlobale: number // Moyenne des scores (%)
+  meilleurScore: number // Max score (%)
+  streakActuel: number // Jours consécutifs
+  totalSessions: number // Sessions complétées
   historiqueSessions: QuizSession[] // Toutes sessions
 }
 ```
@@ -758,6 +825,7 @@ interface GlobalStats {
 #### **Mélange des réponses**
 
 À la création de la session:
+
 ```
 - Générer ordreReponses = [0, 1, 2, 3] mélangé aléatoirement
 - Afficher reponses[ordreReponses[0]], [ordreReponses[1]], etc.
@@ -777,6 +845,7 @@ interface GlobalStats {
 #### **Mise à jour des métadonnées de question**
 
 Après chaque réponse:
+
 ```
 - Incrémenter countApparition
 - Si correcte: incrémenter countBonneReponse
@@ -786,6 +855,7 @@ Après chaque réponse:
 #### **Déblocage de badges**
 
 Après finishQuiz():
+
 ```
 - Vérifier first_quiz: totalSessions >= 1
 - Vérifier perfect_score: score == 100%
@@ -800,6 +870,7 @@ Après finishQuiz():
 #### **Reprendre une session**
 
 Au mount de App.vue:
+
 ```
 - Rechercher QuizSession avec dateFin == null
 - Si trouvée: afficher modal
@@ -814,6 +885,7 @@ Au mount de App.vue:
 ### 5.0 Structure des composants
 
 **Organisation par domaine fonctionnel:**
+
 - `layout/` - Structure principale (AppHeader, AppLayout)
 - `quiz/` - Composants de quiz (Questions, réponses, progression)
 - `stats/` - Affichage statistiques (KPI cards, graphiques, badges)
@@ -831,11 +903,13 @@ Au mount de App.vue:
 **Props:** Aucune
 
 **Enfants:**
+
 - AppHeader (header fixe)
 - router-view (contenu principal)
 - BaseModal (reprise de session)
 
 **Comportements:**
+
 - Affiche modal de reprise si `quizStore.showResumeModal` est vrai
 - Boutons actions:
   - Reprendre → `resumePreviousSession()` + navigate
@@ -850,11 +924,13 @@ Au mount de App.vue:
 **Props:** Aucune
 
 **Affichage:**
+
 - Logo + titre "CodeMaster" (cliquable → home)
 - Bouton settings (icône → `/settings/categories`)
 - Bouton stats (icône + badge notification) → `/stats`
 
 **Comportements:**
+
 - Indicateur visuel (badge rouge) si badges non lus (`badgesNonLus` du statsStore)
 
 ---
@@ -864,6 +940,7 @@ Au mount de App.vue:
 #### **QuestionCard.vue** (`src/components/quiz/QuestionCard.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
   question: SessionQuestion
@@ -875,9 +952,11 @@ interface Props {
 ```
 
 **Emits:**
+
 - `answer-selected(answerIndex: number)`
 
 **Affichage:**
+
 - Numéro question / total
 - Badges catégorie et difficulté
 - Texte de la question (avec Markdown)
@@ -885,6 +964,7 @@ interface Props {
 - Explication (après réponse)
 
 **Comportements:**
+
 - Affiche explication seulement après réponse (`hasAnswered && !estSkippe`)
 - Désactive les boutons après réponse
 - Les réponses sont dans `question.ordreReponses` (mélangées)
@@ -894,6 +974,7 @@ interface Props {
 #### **AnswerOption.vue** (`src/components/quiz/AnswerOption.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
   text: string
@@ -905,9 +986,11 @@ interface Props {
 ```
 
 **Emits:**
+
 - `click()` - click du bouton
 
 **Affichage:**
+
 - Bouton avec texte réponse
 - Classes dynamiques selon état :
   - Normal (enabled, non-répondu)
@@ -920,6 +1003,7 @@ interface Props {
 #### **ProgressBar.vue** (`src/components/quiz/ProgressBar.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
   progress: number // 0-100
@@ -927,6 +1011,7 @@ interface Props {
 ```
 
 **Affichage:**
+
 - Barre de progression horizontale
 - Pourcentage du côté
 
@@ -937,6 +1022,7 @@ interface Props {
 #### **StatCard.vue** (`src/components/stats/StatCard.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
   label: string
@@ -947,6 +1033,7 @@ interface Props {
 ```
 
 **Affichage:**
+
 - Carte avec label, icône et valeur
 - Couleur de fond selon type
 
@@ -955,6 +1042,7 @@ interface Props {
 #### **EvolutionChart.vue** (`src/components/stats/EvolutionChart.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
   data: Record<string, { sum: number; count: number }>
@@ -962,6 +1050,7 @@ interface Props {
 ```
 
 **Comportement:**
+
 - Graphique Chart.js linéaire
 - X-axis: 30 jours passés
 - Y-axis: moyenne score (%)
@@ -972,6 +1061,7 @@ interface Props {
 #### **BadgesGrid.vue** (`src/components/stats/BadgesGrid.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
   badges: Badge[]
@@ -979,6 +1069,7 @@ interface Props {
 ```
 
 **Affichage:**
+
 - Grille 3 colonnes
 - Chaque badge affiche :
   - Icône emoji
@@ -994,6 +1085,7 @@ interface Props {
 #### **BaseButton.vue** (`src/components/common/BaseButton.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
@@ -1008,9 +1100,11 @@ interface Props {
 **Défauts:** variant='primary', size='md', disabled=false, loading=false, fullWidth=false, type='button'
 
 **Slots:**
+
 - default - contenu du bouton
 
 **Comportements:**
+
 - Affiche spinner (⌛) si `loading`
 - Disabled opacity et cursor si `disabled` ou `loading`
 - Active scale 95% au clic
@@ -1027,18 +1121,21 @@ interface Props {
 #### **BaseModal.vue** (`src/components/common/BaseModal.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  title: string      // Modal title header
-  show: boolean      // Controls visibility (v-if)
+  title: string // Modal title header
+  show: boolean // Controls visibility (v-if)
 }
 ```
 
 **Slots:**
+
 - `default` - contenu du modal (body)
 - `actions` - boutons d'action (footer)
 
 **Comportement:**
+
 - Conditional rendering: affiche seulement si `show` est vrai
 - Overlay full-screen avec backdrop blur (position absolute z-50)
 - Centré au milieu de l'écran
@@ -1052,6 +1149,7 @@ interface Props {
 #### **LoadingSpinner.vue** (`src/components/common/LoadingSpinner.vue`)
 
 **Comportement:**
+
 - Composant pur (aucune prop, aucun état)
 - Affiche spinner SVG centré
 - Animation rotation continue
@@ -1061,13 +1159,15 @@ interface Props {
 #### **MarkdownText.vue** (`src/components/common/MarkdownText.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  text: string  // Raw markdown text to render
+  text: string // Raw markdown text to render
 }
 ```
 
 **Comportement:**
+
 1. **Parsing Markdown:**
    - Utilise `marked` library v10+ avec options:
      - `breaks: true` - convertit sauts de ligne en `<br>`
@@ -1091,6 +1191,7 @@ interface Props {
    - Pas de risque XSS si source de confiance
 
 **Side Effects:**
+
 - Render HTML via `v-html` directive
 
 ---
@@ -1100,18 +1201,21 @@ interface Props {
 #### **FormCategorie.vue** (`src/components/settings/FormCategorie.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  categorie: Category | null        // Category to edit (null = create new)
-  allCategories: Category[]         // All existing for validation
+  categorie: Category | null // Category to edit (null = create new)
+  allCategories: Category[] // All existing for validation
 }
 ```
 
 **Emits:**
+
 - `submit: [category: Category]` - Form soumis avec catégorie valide
 - `cancel: []` - Utilisateur annule
 
 **Données locales:**
+
 ```typescript
 form: ref<{ label: string; icon: string; color: string }>
 errors: ref<Record<string, string>>
@@ -1145,6 +1249,7 @@ errors: ref<Record<string, string>>
    - Émet `Category` complète
 
 **Dépendances:**
+
 - Vue composition API (ref, watch, computed, toRaw)
 - Type Category
 
@@ -1153,14 +1258,16 @@ errors: ref<Record<string, string>>
 #### **ListeCategories.vue** (`src/components/settings/ListeCategories.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  categories: Category[]  // Categories to list
-  questions: Question[]   // For counting per category
+  categories: Category[] // Categories to list
+  questions: Question[] // For counting per category
 }
 ```
 
 **Emits:**
+
 - `category-click: [categoryId: string]` - Row cliqué
 - `delete: [categoryId: string]` - Delete confirmé (après swipe)
 
@@ -1184,6 +1291,7 @@ interface Props {
    - Message si aucune catégorie
 
 4. **Fonction helper:**
+
    ```typescript
    getQuestionCountForCategory(categoryId: string): number
      // Compte questions avec categorie === categoryId
@@ -1195,6 +1303,7 @@ interface Props {
    - 14 couleurs supportées
 
 **Dépendances:**
+
 - Vue composition API (ref, computed)
 - Touch events API
 
@@ -1203,18 +1312,21 @@ interface Props {
 #### **ModalSelectCategory.vue** (`src/components/settings/ModalSelectCategory.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  isOpen: boolean       // Modal visibility
+  isOpen: boolean // Modal visibility
   categories: Category[] // Existing categories
 }
 ```
 
 **Emits:**
+
 - `select: [categoryLabel: string]` - Catégorie sélectionnée
 - `cancel: []` - Utilisateur annule
 
 **Données locales:**
+
 ```typescript
 selectedCategory: ref<string>('')  // Selected label
 newCategory: ref({                 // New category form
@@ -1241,6 +1353,7 @@ newCategory: ref({                 // New category form
    - Bouton disabled si rien sélectionné
 
 **Dépendances:**
+
 - Vue composition API (ref, computed)
 - Type Category
 
@@ -1251,16 +1364,18 @@ newCategory: ref({                 // New category form
 #### **StatCard.vue** (`src/components/stats/StatCard.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  label: string                               // Card title (uppercase)
-  value: string | number                      // Main value to display
-  icon?: string                               // Optional Phosphor icon name
-  color?: 'primary' | 'green' | 'orange' | 'slate'  // Default: 'primary'
+  label: string // Card title (uppercase)
+  value: string | number // Main value to display
+  icon?: string // Optional Phosphor icon name
+  color?: 'primary' | 'green' | 'orange' | 'slate' // Default: 'primary'
 }
 ```
 
 **Comportement:**
+
 - Affiche label (petit, uppercase, espaced)
 - Affiche icône + valeur (gros)
 - Couleurs pré-définies:
@@ -1271,13 +1386,14 @@ interface Props {
 - Fond blanc, ombre, border subtle
 
 **Utilisation dans Stats page:**
+
 ```typescript
 // 4 cards pour KPIs
-[
+;[
   { label: 'Moyenne', value: globalStats.moyenneGlobale.toFixed(1) + '%', color: 'primary' },
   { label: 'Meilleur Score', value: globalStats.meilleurScore.toFixed(1) + '%', color: 'green' },
   { label: 'Streak', value: globalStats.streakActuel + 'j', color: 'orange' },
-  { label: 'Total Quizzes', value: globalStats.totalSessions, color: 'slate' }
+  { label: 'Total Quizzes', value: globalStats.totalSessions, color: 'slate' },
 ]
 ```
 
@@ -1286,9 +1402,10 @@ interface Props {
 #### **EvolutionChart.vue** (`src/components/stats/EvolutionChart.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  sessions: QuizSession[]  // Sessions to chart
+  sessions: QuizSession[] // Sessions to chart
 }
 ```
 
@@ -1320,10 +1437,12 @@ interface Props {
    - Message si pas de sessions
 
 **Canvas Reference:**
+
 - HTML element avec ID `evolutionChart`
 - Chart.js référence cet ID
 
 **Dépendances:**
+
 - Chart.js library
 - Vue lifecycle (onMounted, onUnmounted, nextTick)
 
@@ -1332,13 +1451,15 @@ interface Props {
 #### **BadgesGrid.vue** (`src/components/stats/BadgesGrid.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  badges: Badge[]  // All badges to display
+  badges: Badge[] // All badges to display
 }
 ```
 
 **Emits:**
+
 - `badge-click: [badge: Badge]` - Badge cliqué
 
 **Fonctionnalités:**
@@ -1364,6 +1485,7 @@ interface Props {
    - Date déblocage: affichée si disponible
 
 **Intégration Stats page:**
+
 - Crée BadgesGrid avec `dataStore.badges`
 - Écoute `badge-click` pour afficher détails (modal optionnel)
 
@@ -1374,30 +1496,33 @@ interface Props {
 #### **AnswerOption.vue** (`src/components/quiz/AnswerOption.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  text: string              // Answer text
+  text: string // Answer text
   isCorrect: boolean | null // null = unanswered, true/false = answered
-  isSelected: boolean       // User selected this option
-  hasAnswered: boolean      // Quiz state: answered
-  disabled: boolean         // Button disabled
+  isSelected: boolean // User selected this option
+  hasAnswered: boolean // Quiz state: answered
+  disabled: boolean // Button disabled
 }
 ```
 
 **Emits:**
+
 - `click: []` - Bouton cliqué
 
 **Comportement dynamique:**
 
-| État | Classe | Icône |
-|------|--------|-------|
-| Avant réponse | White border, hover | None |
-| Sélectionné correct | Green bg | ✓ check-circle |
-| Sélectionné incorrect | Red bg reduced opacity | ✗ x-circle |
-| Non-sélectionné correct (après) | Green tint light | - |
-| Non-sélectionné incorrect | Gray out | - |
+| État                            | Classe                 | Icône          |
+| ------------------------------- | ---------------------- | -------------- |
+| Avant réponse                   | White border, hover    | None           |
+| Sélectionné correct             | Green bg               | ✓ check-circle |
+| Sélectionné incorrect           | Red bg reduced opacity | ✗ x-circle     |
+| Non-sélectionné correct (après) | Green tint light       | -              |
+| Non-sélectionné incorrect       | Gray out               | -              |
 
 **Interactions:**
+
 - Cliquable tant que `!disabled`
 - Transitions smooth entre états
 - Feedback visuel clair pour correct/incorrect
@@ -1407,13 +1532,15 @@ interface Props {
 #### **ProgressBar.vue** (`src/components/quiz/ProgressBar.vue`)
 
 **Props:**
+
 ```typescript
 interface Props {
-  progress: number  // 0-100 percentage
+  progress: number // 0-100 percentage
 }
 ```
 
 **Affichage:**
+
 - Barre horizontale remplie progressivement
 - Pourcentage affiché à côté ou dans la barre
 - Couleur indigo
@@ -1423,6 +1550,7 @@ interface Props {
 #### **QuestionCard.vue** (détail complet)
 
 **Props:**
+
 ```typescript
 interface Props {
   question: SessionQuestion
@@ -1434,6 +1562,7 @@ interface Props {
 ```
 
 **Emits:**
+
 - `answer-selected: [answerIndex: number]`
 
 **Sections affichées:**
@@ -1460,6 +1589,7 @@ interface Props {
    - Rendu avec MarkdownText
 
 **Logique réponses mélangées:**
+
 ```typescript
 // Affichage dans template:
 v-for="(answerIndex, idx) in question.ordreReponses"
@@ -1480,14 +1610,15 @@ selectedAnswerIndex === question.indexBonneReponse → correct
 **Rôle:** Gestion persistante de l'état de chargement des catégories via localStorage
 
 **Interface de données:**
+
 ```typescript
 interface LoadedCategory {
-  categoryId: string        // UUID de la catégorie (ex: 'cat_react')
-  categoryLabel: string     // Label affichable
-  loaded: boolean          // État chargement
-  questionCount: number    // Total questions chargées
-  loadedAt?: string        // ISO timestamp du chargement
-  error?: string           // Message d'erreur si échec
+  categoryId: string // UUID de la catégorie (ex: 'cat_react')
+  categoryLabel: string // Label affichable
+  loaded: boolean // État chargement
+  questionCount: number // Total questions chargées
+  loadedAt?: string // ISO timestamp du chargement
+  error?: string // Message d'erreur si échec
 }
 ```
 
@@ -1522,6 +1653,7 @@ interface LoadedCategory {
    - Somme des `questionCount` toutes catégories
 
 **Persistance:**
+
 - localStorage key: `'quiz-master-loaded-categories'`
 - Format JSON sérialisé
 - Survit aux fermetures/rechargements
@@ -1535,19 +1667,21 @@ interface LoadedCategory {
 **Rôle:** Chargement asynchrone de fichiers JSON contenant questions depuis `public/questions/`
 
 **Mapping catégories → fichiers:**
+
 ```typescript
 const CATEGORY_FILE_MAPPING = {
-  'react': 'cat_react',
-  'typescript': 'cat_typescript',
-  'nodejs': 'cat_nodejs',
-  'nextjs': 'cat_nextjs',
-  'css': 'cat_css',
-  'javascript': 'cat_javascript',
-  'entretiens': 'cat_entretiens',
+  react: 'cat_react',
+  typescript: 'cat_typescript',
+  nodejs: 'cat_nodejs',
+  nextjs: 'cat_nextjs',
+  css: 'cat_css',
+  javascript: 'cat_javascript',
+  entretiens: 'cat_entretiens',
 }
 ```
 
 **Type de callback:**
+
 ```typescript
 type ProgressCallback = (loaded: number, total: number) => void
 // Appelé pour chaque question chargée (pour barre de progression)
@@ -1586,11 +1720,13 @@ type ProgressCallback = (loaded: number, total: number) => void
    - Appelle `onProgress` pour chaque question
 
 **Gestion erreurs:**
+
 - HTTP 404 → logged as warning, empty array retourné
 - Network errors → thrown, propagé à caller
 - Progress callback errors → propagated
 
 **Dépendances:**
+
 - Fetch API (natif browser)
 - Question type
 
@@ -1633,6 +1769,7 @@ type ProgressCallback = (loaded: number, total: number) => void
    - Nationalité Schiele (difficile)
 
 **Structure question:**
+
 ```typescript
 {
   id: string                    // Unique ID
@@ -1660,15 +1797,17 @@ type ProgressCallback = (loaded: number, total: number) => void
 #### **useDataStore** (src/stores/useDataStore.ts)
 
 **État:**
+
 ```typescript
-const questions = ref<Question[]>([])        // Toutes les questions
-const badges = ref<Badge[]>([])              // Tous les badges
-const categories = ref<Category[]>([])       // Toutes les catégories
-const isLoading = ref(false)                 // État chargement global
-const error = ref<string|null>(null)         // Erreur globale
+const questions = ref<Question[]>([]) // Toutes les questions
+const badges = ref<Badge[]>([]) // Tous les badges
+const categories = ref<Category[]>([]) // Toutes les catégories
+const isLoading = ref(false) // État chargement global
+const error = ref<string | null>(null) // Erreur globale
 ```
 
 **Actions (asynchrones):**
+
 - `initData()` - Charger questions, badges, catégories depuis IndexedDB
 - `importQuestions(json, targetCategory?)` - Importer depuis fichier JSON
 - `resetBadges()` - Réinitialiser tous les badges à 'verrouille'
@@ -1682,6 +1821,7 @@ const error = ref<string|null>(null)         // Erreur globale
 - `reloadQuestions()` - Recharger questions depuis IndexedDB
 
 **Getters:**
+
 - `allCategories` - Computed categories.value
 
 ---
@@ -1689,19 +1829,21 @@ const error = ref<string|null>(null)         // Erreur globale
 #### **useQuizStore** (src/stores/useQuizStore.ts)
 
 **État:**
+
 ```typescript
-const activeSession = ref<QuizSession|null>(null)
-const selectedAnswerIndex = ref<number|null>(null)
+const activeSession = ref<QuizSession | null>(null)
+const selectedAnswerIndex = ref<number | null>(null)
 const hasAnswered = ref(false)
 const showResumeModal = ref(false)
 
 // Sélections temporaires
 const selectedCategories = ref<string[]>([])
 const randomCategoriesSelection = ref<string[]>([])
-const selectedDifficulty = ref<Difficulty|null>(null)
+const selectedDifficulty = ref<Difficulty | null>(null)
 ```
 
 **Computed:**
+
 - `currentQuestion` - Question actuelle
 - `currentQuestionIndex` - Index
 - `progressPercent` - 0-100
@@ -1709,6 +1851,7 @@ const selectedDifficulty = ref<Difficulty|null>(null)
 - `isQuizFinished` - booléen
 
 **Actions (asynchrones):**
+
 - `checkResumableSession()` - Chercher session en cours au mount
 - `resumePreviousSession()` - Reprendre session en cours
 - `abandonSession()` - Supprimer session en cours
@@ -1720,14 +1863,17 @@ const selectedDifficulty = ref<Difficulty|null>(null)
 - `finishQuiz()` - Terminer quiz + calculer scores + mettre à jour stats
 
 **Actions (synchrones):**
+
 - `clearActiveSession()` - Vider l'état
 - `selectCategory(category)` - Enregistrer sélection
-- `openRandomConfig(availableCategories)` - Pré-remplir sélection aléatoire
+- `openRandomConfig(availableCategories)` - Pré-remplir
+
 - `validateRandomSelection()` - Valider sélection aléatoire
 - `selectDifficulty(difficulty)` - Enregistrer difficulté
 - `getReplayParams()` - Retourner paramètres pour replay
 
 **Comportements clés:**
+
 - Questions triées par countApparition (moins vues en premier)
 - Réponses mélangées aléatoirement
 - Sauvegarde après chaque action (submitAnswer, nextQuestion)
@@ -1738,31 +1884,36 @@ const selectedDifficulty = ref<Difficulty|null>(null)
 #### **useStatsStore** (src/stores/useStatsStore.ts)
 
 **État:**
+
 ```typescript
 const globalStats = ref<GlobalStats>({
   moyenneGlobale: 0,
   meilleurScore: 0,
   streakActuel: 0,
   totalSessions: 0,
-  historiqueSessions: []
+  historiqueSessions: [],
 })
 const previousStats = ref<ComparisonStats>({ average: 0 })
 const newlyUnlockedBadges = ref<Badge[]>([])
 ```
 
 **Computed:**
+
 - `badgesNonLus` - Vrai si newlyUnlockedBadges non vide
 
 **Actions (asynchrones):**
+
 - `loadStats()` - Charger et calculer stats depuis IndexedDB
 - `updateStatsAndBadges(session)` - Après finishQuiz(), vérifier badges
 - `calculateDailyAverages(sessions)` - Calculer moyennes par jour (30j)
 
 **Actions (synchrones):**
+
 - `checkAndUnlockBadges(session, completedSessions, currentStreak, badges)` - Logique déblocage
 - `calculateCurrentStreak(sessions)` - Calculer streak actuel
 
 **Calculs:**
+
 - Moyenne = moyenne des notePourcentage
 - Meilleur = max notePourcentage
 - Streak = jours consécutifs avec ≥1 session
@@ -1773,10 +1924,12 @@ const newlyUnlockedBadges = ref<Badge[]>([])
 ### 6.2 Cycle de données
 
 **Initialisation (App.vue mount):**
+
 1. `dataStore.initData()` - Charge questions, badges, catégories
 2. `quizStore.checkResumableSession()` - Vérifie session en cours
 
 **Flux quiz:**
+
 1. Sélection catégorie (Home)
 2. Sélection difficulté (Difficulty)
 3. Sélection compte (Count)
@@ -1786,12 +1939,14 @@ const newlyUnlockedBadges = ref<Badge[]>([])
 7. Stats recalculées et badges mis à jour
 
 **Import de données:**
+
 1. Upload JSON → stocke en sessionStorage
 2. SelectCategory → sélectionne/crée catégorie
 3. `importQuestions(json, categoryLabel)` → valide, normalise, sauvegarde
 4. `reloadQuestions()` pour mettre à jour l'état
 
 **Gestion des erreurs:**
+
 - Try-catch dans chaque action async
 - Erreurs enregistrées dans store.error
 - Messages affichés à l'utilisateur
@@ -1813,7 +1968,7 @@ Les opérations base de données sont abstraites via des **repositories**:
 ```typescript
 interface QuestionRepository {
   getAll(): Promise<Question[]>
-  getById(id: string): Promise<Question|undefined>
+  getById(id: string): Promise<Question | undefined>
   save(question: Question): Promise<void>
   saveMany(questions: Question[]): Promise<void>
   clear(): Promise<void>
@@ -1831,10 +1986,10 @@ interface QuestionRepository {
 ```typescript
 interface SessionRepository {
   getAll(): Promise<QuizSession[]>
-  getById(sessionId: string): Promise<QuizSession|undefined>
+  getById(sessionId: string): Promise<QuizSession | undefined>
   save(session: QuizSession): Promise<void>
   delete(sessionId: string): Promise<void>
-  getPendingSession(): Promise<QuizSession|undefined>
+  getPendingSession(): Promise<QuizSession | undefined>
   getCompleted(): Promise<QuizSession[]>
   clear(): Promise<void>
 }
@@ -1860,8 +2015,8 @@ interface MetaRepository {
 ```typescript
 interface CategoryRepository {
   getAll(): Promise<Category[]>
-  getById(id: string): Promise<Category|undefined>
-  getByLabel(label: string): Promise<Category|undefined>
+  getById(id: string): Promise<Category | undefined>
+  getByLabel(label: string): Promise<Category | undefined>
   save(category: Category): Promise<void>
   update(category: Category): Promise<void>
   delete(id: string): Promise<void>
@@ -1874,6 +2029,7 @@ interface CategoryRepository {
 ### 7.3 Format des données importées (JSON)
 
 **Requis:**
+
 ```json
 [
   {
@@ -1887,6 +2043,7 @@ interface CategoryRepository {
 ```
 
 **Optionnels:**
+
 ```json
 {
   "id": "q-custom-1",
@@ -1896,6 +2053,7 @@ interface CategoryRepository {
 ```
 
 **Validation:**
+
 - Array requis
 - Chaque item doit avoir: intitule, reponses (array 4 éléments), indexBonneReponse (0-3), difficulte
 - Si categorie absent: 'Sans catégorie'
@@ -1909,6 +2067,7 @@ interface CategoryRepository {
 ### 8.1 Pas d'authentification
 
 L'application **n'a pas de système d'authentification**. Il n'y a pas de:
+
 - Login / signup
 - Tokens JWT
 - Sessions utilisateur
@@ -1919,6 +2078,7 @@ L'application **n'a pas de système d'authentification**. Il n'y a pas de:
 **Toutes les pages sont publiques.** N'importe quel utilisateur peut y accéder directement.
 
 **Restriction fonctionnelle:**
+
 - `/quiz/active` ne fonctionne que s'il existe une `activeSession` en store
   - Si pas de session: composant vide ou redirection implicite vers `/home`
 - `/quiz/summary` nécessite une session terminée (`isQuizFinished`)
@@ -1940,10 +2100,12 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Situation:** Utilisateur crée un quiz avec catégories/difficulté où il n'y a aucune question.
 
 **Comportement:**
+
 - `createQuizSession()` lance une exception: "Pas assez de questions disponibles pour cette sélection"
 - Utilisateur reste sur la page et voit le message d'erreur
 
 **Prévention:**
+
 - Home affiche alerte si aucune catégorie disponible
 - Encourage l'import
 
@@ -1954,6 +2116,7 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Situation:** Utilisateur ferme le navigateur pendant un quiz.
 
 **Comportement:**
+
 - Session non terminée persiste en IndexedDB (`dateFin === null`)
 - Au prochain mount de l'app: modal "Quiz en cours" propose reprendre ou abandonner
 - Si reprendre: active la session et navigue vers `/quiz/active`
@@ -1965,6 +2128,7 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Situation:** Utilisateur supprime une catégorie qui contient des questions.
 
 **Comportement (cascading):**
+
 - Toutes les questions de cette catégorie sont supprimées
 - Les sessions historiques gardent les snapshots de questions
 - Aucun impact sur les statistiques (basées sur historiqueSessions)
@@ -1976,6 +2140,7 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Situation:** Utilisateur change le label d'une catégorie (ex: 'TypeScript' → 'TS').
 
 **Comportement:**
+
 - Toutes les questions ayant `categorie: 'TypeScript'` sont mises à jour vers `'TS'`
 - Sauvegarder en IndexedDB
 - Garder les sessions historiques inchangées (dateJour/categories referant aux labels d'époque)
@@ -1987,6 +2152,7 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Situation:** Utilisateur importe des questions dans une catégorie qui existe déjà.
 
 **Comportement:**
+
 - Les questions s'ajoutent aux existantes
 - `questionRepository.saveMany()` utilise `store.put()` (insert or update)
 - Si ID collide: l'ancien est écrasé
@@ -1998,6 +2164,7 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Situation:** Utilisateur obtient 100% à un quiz.
 
 **Comportement:**
+
 - `perfect_score` badge est débloqué (si pas déjà débloqué)
 - Ajouté à `newlyUnlockedBadges` pour notification
 - Message personnalisé "Parfait ! Vous êtes un expert !"
@@ -2009,6 +2176,7 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Situation:** Utilisateur ne fait pas de quiz pendant 2+ jours.
 
 **Comportement:**
+
 - `calculateCurrentStreak()` calcule jours consécutifs
 - Si dernière session < 2 jours: streak continue
 - Si > 1 jour: streak = 0
@@ -2023,8 +2191,9 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 **Composant:** `MarkdownText.vue` utilise `marked` library.
 
 **Comportement:**
+
 - Markdown parsé et rendu en HTML
-- Support: **bold**, *italic*, `code`, # headers, listes, liens
+- Support: **bold**, _italic_, `code`, # headers, listes, liens
 - Pas de risque XSS (HTML échappé sauf si balisé)
 
 ---
@@ -2064,6 +2233,7 @@ Il n'y a pas de partage de données entre appareils / utilisateurs.
 #### **Connaître le statut d'une opération**
 
 Les stores fournissent:
+
 - `isLoading` pour signaler un chargement
 - `error` pour un message d'erreur
 - Pas de loading détaillé par opération (global uniquement)
@@ -2088,6 +2258,7 @@ Les stores fournissent:
 - **Mélange aléatoire:** Fait à la création (O(n), pas à chaque affichage)
 
 **Goulots potentiels:**
+
 - Import de 1000+ questions peut être lent (parsing + sauvegarde)
 - Calcul de streak sur 30j: linéaire sur toutes les sessions
 - Graphique 30j: recalculé à chaque loadStats()
@@ -2143,6 +2314,7 @@ Les stores fournissent:
   - États de réponse (correct/incorrect) explicites
 
 **Observations:**
+
 - Pas d'ARIA labels détaillés
 - Pas de gestionnaire de focus modal
 - Pas de skip-to-content
@@ -2175,6 +2347,7 @@ Les stores fournissent:
    - Facilite trace des opérations
 
 **Absence de patterns:**
+
 - Pas de tests unitaires couverts (test files existent mais vides)
 - Pas de E2E complets
 - Pas de storybook
@@ -2189,19 +2362,20 @@ Les stores fournissent:
 ```typescript
 export default defineConfig({
   plugins: [
-    vue(),              // Support .vue files
-    vueJsx(),           // JSX support
-    vueDevTools(),      // Vue DevTools plugin
+    vue(), // Support .vue files
+    vueJsx(), // JSX support
+    vueDevTools(), // Vue DevTools plugin
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 })
 ```
 
 **Points clés:**
+
 - Target ES2020
 - Alias `@` pour `src/`
 - Vite v7 (full ESM)
@@ -2220,6 +2394,7 @@ export default defineConfig({
 ```
 
 **Points clés:**
+
 - Strict mode activé (hérité de @vue/tsconfig)
 - Include fichiers .vue
 - Alias path matching
@@ -2234,13 +2409,14 @@ export default {
     extend: {
       colors: {
         // Material Design 3 colors customisés
-      }
-    }
-  }
+      },
+    },
+  },
 }
 ```
 
 **Intégration:**
+
 - @tailwindcss/postcss (PostCSS plugin)
 - src/style.css: `@import "tailwindcss"`
 - CSS compilé et tree-shaken
@@ -2260,11 +2436,12 @@ Intégration simple Tailwind.
 ### 11.5 ESLint (eslint.config.ts)
 
 Lint avec:
+
 - Oxlint (1.23) - correctness
 - ESLint 9.37 - rules
 - Vue plugin
 - TypeScript plugin
-- Vitest plugin (pour __tests__)
+- Vitest plugin (pour **tests**)
 - Prettier plugin (formatting)
 
 ### 11.6 Prettier (.prettierrc.json)
@@ -2290,11 +2467,13 @@ npm run format           # Prettier format
 ### 12.2 Artefacts de build
 
 **Production:**
+
 - `dist/` - bundles optimisés minifiés
 - `dist/assets/` - CSS, JS, chunks
 - `dist/index.html` - entry point
 
 **Taille estimée:**
+
 - CSS: ~32kB (~6.3kB gzipped)
 - JS: Dépend de bundle splitting
 
@@ -2309,23 +2488,23 @@ npm run format           # Prettier format
 
 ### Tableau résumé
 
-| Chemin | Nom | Type | Rôle principal |
-|--------|-----|------|-----------------|
-| `layout/AppLayout.vue` | AppLayout | Layout | Wrapper principal avec header et modal |
-| `layout/AppHeader.vue` | AppHeader | Navigation | En-tête avec logo et accès stats |
-| `quiz/QuestionCard.vue` | QuestionCard | Présentation | Affichage question + 4 réponses |
-| `quiz/AnswerOption.vue` | AnswerOption | Bouton | Réponse cliquable avec feedback état |
-| `quiz/ProgressBar.vue` | ProgressBar | Indicateur | Barre progression 0-100% |
-| `stats/StatCard.vue` | StatCard | KPI | Card statistique (moyenne, streak, etc.) |
-| `stats/EvolutionChart.vue` | EvolutionChart | Graphique | Chart.js 30-day trend line |
-| `stats/BadgesGrid.vue` | BadgesGrid | Grille | Affichage 3-col badges (vérouillé/débloqué) |
-| `settings/FormCategorie.vue` | FormCategorie | Formulaire | Create/edit catégorie (label, icon, color) |
-| `settings/ListeCategories.vue` | ListeCategories | Liste | Swipe-to-delete catégories avec counts |
-| `settings/ModalSelectCategory.vue` | ModalSelectCategory | Modal | Sélection catégorie existante ou création |
-| `common/BaseButton.vue` | BaseButton | Composant | Bouton réutilisable (4 variants, 3 sizes) |
-| `common/BaseModal.vue` | BaseModal | Layout | Modal wrapper générique |
-| `common/LoadingSpinner.vue` | LoadingSpinner | Indicateur | Spinner SVG pur |
-| `common/MarkdownText.vue` | MarkdownText | Rendu | Parse Markdown vers HTML |
+| Chemin                             | Nom                 | Type         | Rôle principal                              |
+| ---------------------------------- | ------------------- | ------------ | ------------------------------------------- |
+| `layout/AppLayout.vue`             | AppLayout           | Layout       | Wrapper principal avec header et modal      |
+| `layout/AppHeader.vue`             | AppHeader           | Navigation   | En-tête avec logo et accès stats            |
+| `quiz/QuestionCard.vue`            | QuestionCard        | Présentation | Affichage question + 4 réponses             |
+| `quiz/AnswerOption.vue`            | AnswerOption        | Bouton       | Réponse cliquable avec feedback état        |
+| `quiz/ProgressBar.vue`             | ProgressBar         | Indicateur   | Barre progression 0-100%                    |
+| `stats/StatCard.vue`               | StatCard            | KPI          | Card statistique (moyenne, streak, etc.)    |
+| `stats/EvolutionChart.vue`         | EvolutionChart      | Graphique    | Chart.js 30-day trend line                  |
+| `stats/BadgesGrid.vue`             | BadgesGrid          | Grille       | Affichage 3-col badges (vérouillé/débloqué) |
+| `settings/FormCategorie.vue`       | FormCategorie       | Formulaire   | Create/edit catégorie (label, icon, color)  |
+| `settings/ListeCategories.vue`     | ListeCategories     | Liste        | Swipe-to-delete catégories avec counts      |
+| `settings/ModalSelectCategory.vue` | ModalSelectCategory | Modal        | Sélection catégorie existante ou création   |
+| `common/BaseButton.vue`            | BaseButton          | Composant    | Bouton réutilisable (4 variants, 3 sizes)   |
+| `common/BaseModal.vue`             | BaseModal           | Layout       | Modal wrapper générique                     |
+| `common/LoadingSpinner.vue`        | LoadingSpinner      | Indicateur   | Spinner SVG pur                             |
+| `common/MarkdownText.vue`          | MarkdownText        | Rendu        | Parse Markdown vers HTML                    |
 
 ---
 
@@ -2333,52 +2512,52 @@ npm run format           # Prettier format
 
 ### useDataStore
 
-| Item | Type | Rôle |
-|------|------|------|
-| `questions` | ref | Array questions depuis IndexedDB |
-| `badges` | ref | Array badges 6 pré-définis |
-| `categories` | ref | Array catégories |
-| `isLoading` | ref | Flag état chargement |
-| `error` | ref | Message erreur global |
-| `initData()` | action | Load q, badges, cats au mount |
-| `importQuestions(json, cat)` | action | Validate + save JSON import |
-| `addCategory(cat)` | action | Créer catégorie (avec unicité) |
-| `updateCategory(cat)` | action | Edit + cascade label change |
-| `deleteCategory(id)` | action | Delete + cascade questions |
-| `resetBadges()` | action | Set all à 'verrouille' |
-| `updateBadges(badges)` | action | Save badges state |
+| Item                         | Type   | Rôle                             |
+| ---------------------------- | ------ | -------------------------------- |
+| `questions`                  | ref    | Array questions depuis IndexedDB |
+| `badges`                     | ref    | Array badges 6 pré-définis       |
+| `categories`                 | ref    | Array catégories                 |
+| `isLoading`                  | ref    | Flag état chargement             |
+| `error`                      | ref    | Message erreur global            |
+| `initData()`                 | action | Load q, badges, cats au mount    |
+| `importQuestions(json, cat)` | action | Validate + save JSON import      |
+| `addCategory(cat)`           | action | Créer catégorie (avec unicité)   |
+| `updateCategory(cat)`        | action | Edit + cascade label change      |
+| `deleteCategory(id)`         | action | Delete + cascade questions       |
+| `resetBadges()`              | action | Set all à 'verrouille'           |
+| `updateBadges(badges)`       | action | Save badges state                |
 
 ### useQuizStore
 
-| Item | Type | Rôle |
-|------|------|------|
-| `activeSession` | ref | QuizSession en cours ou null |
-| `selectedAnswerIndex` | ref | Index réponse sélectionnée |
-| `hasAnswered` | ref | Flag question répondue |
-| `showResumeModal` | ref | Affiche modal reprise |
-| `selectedCategories` | ref | Categories sélectionnées |
-| `selectedDifficulty` | ref | Difficulty sélectionnée |
-| `currentQuestion` | computed | SessionQuestion courante |
-| `progressPercent` | computed | 0-100 progression |
-| `isLastQuestion` | computed | Dernière question flag |
-| `createQuizSession(cats, diff, count)` | action | Create + save session |
-| `submitAnswer(idx)` | action | Enregistrer réponse |
-| `skipQuestion()` | action | Passer question |
-| `nextQuestion()` | action | Question suivante ou finish |
-| `finishQuiz()` | action | Terminer + calc scores + badges |
-| `checkResumableSession()` | action | Find pending session |
+| Item                                   | Type     | Rôle                            |
+| -------------------------------------- | -------- | ------------------------------- |
+| `activeSession`                        | ref      | QuizSession en cours ou null    |
+| `selectedAnswerIndex`                  | ref      | Index réponse sélectionnée      |
+| `hasAnswered`                          | ref      | Flag question répondue          |
+| `showResumeModal`                      | ref      | Affiche modal reprise           |
+| `selectedCategories`                   | ref      | Categories sélectionnées        |
+| `selectedDifficulty`                   | ref      | Difficulty sélectionnée         |
+| `currentQuestion`                      | computed | SessionQuestion courante        |
+| `progressPercent`                      | computed | 0-100 progression               |
+| `isLastQuestion`                       | computed | Dernière question flag          |
+| `createQuizSession(cats, diff, count)` | action   | Create + save session           |
+| `submitAnswer(idx)`                    | action   | Enregistrer réponse             |
+| `skipQuestion()`                       | action   | Passer question                 |
+| `nextQuestion()`                       | action   | Question suivante ou finish     |
+| `finishQuiz()`                         | action   | Terminer + calc scores + badges |
+| `checkResumableSession()`              | action   | Find pending session            |
 
 ### useStatsStore
 
-| Item | Type | Rôle |
-|------|------|------|
-| `globalStats` | ref | Agrégation stats (moyenne, streak, etc.) |
-| `newlyUnlockedBadges` | ref | Badges débloqués cette session |
-| `badgesNonLus` | computed | True si badges nouveaux |
-| `loadStats()` | action | Calculate global stats |
-| `updateStatsAndBadges(session)` | action | After finishQuiz + check badges |
-| `calculateDailyAverages(sessions)` | action | 30-day map for chart |
-| `calculateCurrentStreak(sessions)` | action | Days consécutifs |
+| Item                               | Type     | Rôle                                     |
+| ---------------------------------- | -------- | ---------------------------------------- |
+| `globalStats`                      | ref      | Agrégation stats (moyenne, streak, etc.) |
+| `newlyUnlockedBadges`              | ref      | Badges débloqués cette session           |
+| `badgesNonLus`                     | computed | True si badges nouveaux                  |
+| `loadStats()`                      | action   | Calculate global stats                   |
+| `updateStatsAndBadges(session)`    | action   | After finishQuiz + check badges          |
+| `calculateDailyAverages(sessions)` | action   | 30-day map for chart                     |
+| `calculateCurrentStreak(sessions)` | action   | Days consécutifs                         |
 
 ---
 
@@ -2449,6 +2628,7 @@ math_expert:     5+ sessions monocatégorie 'Maths'
 **Localisation:** `public/questions/{category}.json`
 
 **Exemples de fichiers:**
+
 - `cat_react.json` - Questions React
 - `cat_typescript.json` - Questions TypeScript
 - `cat_nodejs.json` - Questions Node.js
@@ -2458,6 +2638,7 @@ math_expert:     5+ sessions monocatégorie 'Maths'
 - `cat_entretiens.json` - Questions entretiens techniques
 
 **Format JSON:**
+
 ```json
 [
   {
@@ -2524,6 +2705,7 @@ GlobalStats
 ## 13. Dépendances et versions
 
 ### Production
+
 - vue@3.5.22
 - pinia@3.0.3
 - vue-router@4.6.3
@@ -2532,6 +2714,7 @@ GlobalStats
 - @tailwindcss/postcss@4.1.17
 
 ### Dev
+
 - vite@7.1.11
 - typescript@~5.9.0
 - @vitejs/plugin-vue@6.0.1
@@ -2548,6 +2731,7 @@ GlobalStats
 ### Résumé
 
 **CodeMaster** est une Progressive Web Application (PWA) de quiz 100% client-side. Elle permet aux utilisateurs de:
+
 - Faire des quiz catégorisés avec difficulté variable
 - Suivre leurs progrès via statistiques et badges
 - Importer des questions personnalisées
