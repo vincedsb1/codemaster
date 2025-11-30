@@ -81,8 +81,11 @@ function handleGlobalClick(event: MouseEvent) {
   if (!hasAnswered.value) return
 
   // Check if the target is interactive (button, link, etc.) to avoid conflict
+  // We want to ignore clicks on ACTIVE buttons/links.
+  // Disabled buttons (like answer options after selection) should NOT count as interactive
+  // so clicks on them will trigger handleNext.
   const target = event.target as HTMLElement
-  const isInteractive = target.closest('button, a, [role="button"]')
+  const isInteractive = target.closest('button:not(:disabled), a, [role="button"]')
   
   if (!isInteractive) {
     handleNext()
@@ -102,7 +105,7 @@ function handleGlobalClick(event: MouseEvent) {
 
     <!-- Navigation Bar (Sticky) -->
     <nav class="sticky top-1.5 z-40 h-14 bg-white/85 backdrop-blur-md border-b border-gray-200/50 flex items-center justify-between px-6 transition-all duration-300">
-      <button @click="confirmAbandon"
+      <button @click.stop="confirmAbandon"
               class="flex items-center text-blue-600 hover:text-blue-700 active:opacity-60 transition-colors w-10">
         <i class="ph ph-caret-left text-xl"></i>
       </button>
@@ -111,7 +114,7 @@ function handleGlobalClick(event: MouseEvent) {
         Quiz
       </h1>
 
-      <button @click="confirmAbandon"
+      <button @click.stop="confirmAbandon"
               class="flex items-center justify-end text-slate-400 hover:text-slate-600 active:opacity-60 transition-colors w-10">
         <i class="ph ph-x text-lg"></i>
       </button>
@@ -145,7 +148,7 @@ function handleGlobalClick(event: MouseEvent) {
           <div class="space-y-3">
             <button v-for="(answer, index) in currentQuestion.reponses"
                     :key="index"
-                    @click="handleAnswer(index)"
+                    @click.stop="handleAnswer(index)"
                     :disabled="hasAnswered"
                     class="group w-full rounded-[24px] p-4 border transition-all duration-200 flex items-start gap-4 text-left relative overflow-hidden disabled:cursor-not-allowed"
                     :class="getAnswerClasses(index, selectedAnswerIndex, currentQuestion.indexBonneReponse, hasAnswered)">
@@ -194,13 +197,13 @@ function handleGlobalClick(event: MouseEvent) {
     <!-- Action Buttons (Sticky Bottom) -->
     <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-[20px] border-t border-white/30 px-6 py-4 flex gap-3 z-50">
 
-      <button @click="handleSkip"
+      <button @click.stop="handleSkip"
               :disabled="hasAnswered"
               class="flex-1 rounded-full px-4 py-3.5 font-semibold text-[17px] bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
         Passer
       </button>
 
-      <button @click="handleNext"
+      <button @click.stop="handleNext"
               :disabled="!hasAnswered"
               class="flex-1 rounded-full px-4 py-3.5 font-semibold text-[17px] bg-blue-600 text-white hover:bg-blue-700 active:scale-95 shadow-[0_4px_12px_rgba(37,99,235,0.3)] transition-all duration-200 disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed">
         {{ isLastQuestion ? 'Terminer' : 'Suivant' }}
@@ -208,7 +211,7 @@ function handleGlobalClick(event: MouseEvent) {
     </div>
 
     <!-- Abandon Modal -->
-    <div v-if="showAbandonModal" class="fixed inset-0 z-[60] flex items-center justify-center p-6 animate-fade-in">
+    <div v-if="showAbandonModal" class="fixed inset-0 z-[60] flex items-center justify-center p-6 animate-fade-in" @click.stop>
       <!-- Backdrop -->
       <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showAbandonModal = false"></div>
 
